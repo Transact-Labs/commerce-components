@@ -1,6 +1,10 @@
 <template>
   <div id="app">
     Commerce.js x Vue.js !
+    <ChecPaymentForm
+      defaultDeliveryCountry="US"
+      defaultDeliveryRegion="FL"
+    />
   </div>
 </template>
 <script>

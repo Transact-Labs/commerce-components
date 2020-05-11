@@ -1,4 +1,5 @@
 import Commerce from '@chec/commerce.js';
+import PaymentForm from './components/PaymentForm.vue';
 
 export default function install(Vue, options) {
   if (!options || !options.commercejsPublicKey) {
@@ -12,4 +13,6 @@ export default function install(Vue, options) {
       );
     },
   });
+
+  Vue.component('ChecPaymentForm', PaymentForm);
 }
