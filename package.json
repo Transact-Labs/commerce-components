@@ -8,9 +8,11 @@
     "lint:fix": "vue-cli-service lint --fix",
     "build-lib": "vue-cli-service build --target lib --name ui-library src/index.js",
     "storybook:build": "vue-cli-service storybook:build -c config/storybook",
-    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook"
+    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
+    "demo:serve": "echo \"Starting demo on port 7777\" && vue-cli-service serve --port 7777 demo/main.js"
   },
   "dependencies": {
+    "@chec/commerce.js": "^2.0.1",
     "@popperjs/core": "^2.1.1",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "autoprefixer": "^9.7.4",

@@ -1,7 +1,5 @@
 import '../assets/tailwind.css';
 import Vue from 'vue';
-import { BaseTooltip } from '../index';
+import VueCommercejs from '../index';
 
-Vue.directive('tooltip', BaseTooltip.VTooltip);
-Vue.directive('close-popover', BaseTooltip.VClosePopover);
-Vue.component('v-popover', BaseTooltip.VPopover);
+Vue.use(VueCommercejs, { commercejsPublicKey: process.env.VUE_APP_COMMERCEJS_PUBLIC_KEY });
