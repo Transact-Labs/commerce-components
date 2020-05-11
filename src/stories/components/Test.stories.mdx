@@ -1,0 +1,23 @@
+import { Meta, Props, Story, Preview } from '@storybook/addon-docs/blocks';
+
+<Meta title="Test" />
+
+# Checkbox
+
+<Preview>
+  <Story name="Test">
+    {{
+      created() {
+        if (this.$commerce && this.$commerce.cart) {
+          alert(`✔ The VueCommercejs plugin installer worked! 🙌🏽`);
+        }
+      },
+      template: `
+        <div class="py-16 flex justify-center font-lato">
+          <div>
+            Commerce.js x Vue!
+          </div>
+        </div>`,
+    }}
+  </Story>
+</Preview>
