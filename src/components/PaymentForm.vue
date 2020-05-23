@@ -1,6 +1,11 @@
 <template>
   <form>
+
+    <input name="firstName" v-model="f" className="rounded-0 w-100" />
+    <!-- todo : create select base-list component -->
+    <!-- todo : wrap with slot and use this mark-up as fall-back -->
     <select
+      :class="[ countrySelectClass ? countrySelectClass : 'payment-form__delivery-country-select']"
       name="deliveryCountry"
       v-model="deliveryCountry"
       placeholder="Delivery Country">
@@ -12,6 +17,7 @@
 
     <select
       name="deliveryRegion"
+      :class="[ countryRegionClass ? countryRegionClass : 'payment-form__delivery-country-select']"
       :disabled="!!!deliveryCountry"
       v-model="deliveryRegion">
       <option value="" disabled>Select your states, provinces, or region</option>
@@ -22,12 +28,14 @@
   </form>
 </template>
 <script>
+import ccFormat from '@/utils/ccFormat';
 /**
  * TODO:
  *  - generate token if cart exist or not empty, or decrease opacity
  *  - if configured to allowed that, or else emit event to indicate
  *  - to container that no checkout was generated, due to no cart/empty cart
  */
+const IS_DEV_MODE = process.env.NODE_ENV === 'development';
 export default {
   name: 'PaymentForm',
   data() {
@@ -35,8 +43,34 @@ export default {
       deliveryCountry: this.defaultDeliveryCountry || '',
       deliveryRegion: this.defaultDeliveryRegion || '',
 
+      customer: {
+        firstName: '',
+        lastName: '',
+        email: '',
+      },
+
+      shipping: {
+        name: '',
+        street: '',
+        street2: '',
+        townCity: '',
+        postalZipCode: '',
+      },
+
+      selectedShippingMethod: '',
+
+      card: {
+        number: IS_DEV_MODE ? ccFormat('4242424242424242') : '', // if dev. mode, set dev friendly defaults
+        expMonth: '',
+        expYear: '',
+        cvc: '',
+        billingPostalZipcode: '',
+      },
+
       countries: {},
       subdivisions: {},
+
+      selectedGateway: IS_DEV_MODE ? 'test_gateway' : '', // if dev. mode, set dev friendly defaults
     };
   },
   props: {
@@ -54,6 +88,20 @@ export default {
       type: String,
       default: '',
     },
+    /**
+     * class to apply to default region select element
+     */
+    countryRegionClass: {
+      type: String,
+      default: '',
+    },
+    /**
+     * class to apply to default country select element
+     */
+    countrySelectClass: {
+      type: String,
+      default: '',
+    },
   },
   created() {
     if (!this.$commerce) {
@@ -63,7 +111,10 @@ export default {
     this.getRegions(this.deliveryCountry);
   },
   watch: {
-    deliveryCountry(newVal) {
+    deliveryCountry(prevVal, newVal) {
+      if (prevVal !== newVal) {
+        this.deliveryRegion = '';
+      }
       // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
       this.getRegions(newVal);
     },
