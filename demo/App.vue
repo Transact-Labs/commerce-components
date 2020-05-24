@@ -5,24 +5,26 @@
     <br />
     <code>{{ JSON.stringify(cart, null, 2)}}</code>
     <br />
-    <button @click="() => addToCart(0)">Add first product to cart</button>
+    <button @click="() => addToCart(0)">Add first product to cart</button> --
+    <button @click="() => removeFromCart(0)">Remove first  product from cart</button>
     <br />
-    <button @click="() => addToCart(1)">Add second  product to cart</button>
+    <button @click="() => addToCart(1)">Add second  product to cart</button> --
+    <button @click="() => removeFromCart(1)">Remove second  product from cart</button>
     <br />
-    <div>
-    <ChecPaymentForm
-      defaultDeliveryCountry="US"
-      defaultDeliveryRegion="FL"
-      :identifierId="cart.id"
-      :checkout.sync="checkoutTokenObject"
-    />
-    <br />
-    <p>
-      "the checkout is"
-      {{
-        JSON.stringify(checkoutTokenObject, null, 2)
-      }}
-    </p>
+    <div class="bg-black w-full">
+      <ChecPaymentForm
+        defaultDeliveryCountry="US"
+        defaultDeliveryRegion="FL"
+        :identifierId="cart.id"
+        :checkout.sync="checkoutTokenObject"
+      />
+      <br />
+      <p>
+        "the checkout is"
+        {{
+          JSON.stringify(checkoutTokenObject, null, 2)
+        }}
+      </p>
     </div>
   </div>
 </template>
@@ -49,6 +51,11 @@ export default {
     checkoutTokenObject: {},
   }),
   methods: {
+    removeFromCart(index) {
+      this.$commerce.cart.remove(this.cart.line_items[index].id).then(({ cart }) => {
+        this.cart = cart;
+      });
+    },
     addToCart(index) {
       this.$commerce.cart.add(this.products[index].id).then(({ cart }) => {
         this.cart = cart;

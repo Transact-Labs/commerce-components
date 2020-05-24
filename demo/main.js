@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import '@/assets/tailwind.css';
+import '../src/assets/tailwind.css';
 import VueCommercejs from '../src/index';
 import App from './App.vue';
 

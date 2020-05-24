@@ -190,9 +190,9 @@ export default {
     identifierId: {
       handler(val, oldVal) {
         if (!oldVal && val) {
-        // on initial creation prop.identifierId may be empty
-        // so, only invoke generateCheckoutToken that relies on indentifierId
-        // only on the subsequent update to identifierId, where the previous indentifierId
+        // on initial creation of component prop.identifierId may be empty
+        // thefore only invoke generateCheckoutToken (which relies on indentifierId)
+        // on the subsequent update to identifierId, where the previous indentifierId
         // was empty/undefined
           this.generateCheckoutToken()
             .then(checkout => this.emitUpdateCheckout(checkout))
