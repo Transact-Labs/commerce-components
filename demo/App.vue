@@ -38,7 +38,7 @@ export default {
       console.log('There was an error retrieving the cart', error);
     });
 
-    // get single product from store
+    // get products from store
     this.$commerce.products.list().then(({ data = [] }) => {
       this.products = data;
     });

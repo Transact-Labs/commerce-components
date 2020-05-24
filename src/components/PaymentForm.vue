@@ -33,12 +33,7 @@
 </template>
 <script>
 import ccFormat from '@/utils/ccFormat';
-/**
- * TODO:
- *  - generate token if cart exist or not empty, or decrease opacity
- *  - if configured to allowed that, or else emit event to indicate
- *  - to container that no checkout was generated, due to no cart/empty cart
- */
+
 const IS_DEV_MODE = process.env.NODE_ENV === 'development';
 export default {
   name: 'PaymentForm',
