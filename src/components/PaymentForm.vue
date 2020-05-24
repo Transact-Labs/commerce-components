@@ -141,7 +141,6 @@ export default {
     }
 
     this.getAllCountries();
-    this.getRegions(this.deliveryCountry);
 
     // utilize emitted Commerce.js Cart Events
     // Cart.Item.Added, Cart.Item.Updated, Cart.Item.Removed, Cart.Deleted, Cart.Emptied
@@ -205,12 +204,15 @@ export default {
       },
       immediate: true,
     },
-    deliveryCountry(prevVal, newVal) {
-      if (prevVal !== newVal) {
-        this.deliveryRegion = '';
-      }
-      // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
-      this.getRegions(newVal);
+    deliveryCountry: {
+      handler(val, oldVal) {
+        if (oldVal !== val) {
+          this.deliveryRegion = '';
+        }
+        // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
+        this.getRegions(val);
+      },
+      immediate: true,
     },
   },
   methods: {
