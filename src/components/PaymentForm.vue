@@ -41,13 +41,11 @@
         v-model="shipping.postalZipCode"
       />
       <!-- todo : create select base-list component -->
-      <!-- todo : wrap with slot and use this mark-up as fall-back -->
       <select
         :class="[ countrySelectClass ? countrySelectClass : 'payment-form__delivery-country-select']"
         name="shippingCountry"
-        v-model="shipping.country"
-        placeholder="Country">
-        <option value="" disabled>Select your country</option>
+        v-model="shipping.country">
+        <option value="" disabled>Select your shipping country</option>
         <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
           {{ countryValue }}
         </option>
@@ -73,30 +71,50 @@
     <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_billing_address">
       <!-- shippping information -->
       <input
-        name="shippingName"
-        placeholder="Shipping name"
-        v-model="shipping.name"
+        name="billingName"
+        placeholder="Billing name"
+        v-model="billing.name"
       />
       <input
-        name="shippingStreet"
-        placeholder="Street address"
-        v-model="shipping.street"
+        name="billingStreet"
+        placeholder="Billing street address"
+        v-model="billing.street"
       />
       <input
-        name="shippingStreet2"
-        placeholder="Street Address 2 (optional)"
-        v-model="shipping.street2"
+        name="billingStreet2"
+        placeholder="Billing street address 2 (optional)"
+        v-model="billing.street2"
       />
       <input
-        name="shippingTownCity"
-        placeholder="City"
-        v-model="shipping.townCity"
+        name="billingTownCity"
+        placeholder="Billing city"
+        v-model="billing.townCity"
       />
       <input
-        name="postalZipCode"
-        placeholder="Zip code"
-        v-model="shipping.postalZipCode"
+        name="billingPostalZipCode"
+        placeholder="Billing zip code"
+        v-model="billing.postalZipCode"
       />
+      <!-- todo : create select base-list component -->
+      <select
+        name="billingCountry"
+        v-model="billing.country">
+        <option value="" disabled>Select your billing country</option>
+        <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
+          {{ countryValue }}
+        </option>
+      </select>
+      <select
+        name="billingCountyState"
+        v-model="billing.countyState">
+        <option value="" disabled>Select your states, provinces, or region</option>
+        <option
+          v-for="(subdivisionValue, subdivisionKey) in billingSubdivisions"
+          :value="subdivisionKey"
+          :key="subdivisionKey">
+          {{ billingSubdivisions[subdivisionKey] }}
+        </option>
+      </select>
     </template>
   </form>
 </template>
@@ -108,9 +126,6 @@ export default {
   name: 'PaymentForm',
   data() {
     return {
-      deliveryCountry: this.defaultDeliveryCountry || '',
-      deliveryRegion: this.defaultDeliveryRegion || '',
-
       customer: {
         firstName: '',
         lastName: '',
@@ -122,13 +137,19 @@ export default {
         street: '',
         street2: '',
         townCity: '',
-        countyState: this.defaultDeliveryRegion || '',
-        country: this.defaultDeliveryCountry || '',
+        countyState: '',
+        country: 'US',
         postalZipCode: '',
       },
 
       billing: {
-
+        name: '',
+        street: '',
+        street2: '',
+        townCity: '',
+        countyState: '',
+        country: 'US',
+        postalZipCode: '',
       },
 
       selectedShippingMethod: '',
@@ -143,6 +164,7 @@ export default {
 
       countries: {},
       subdivisions: {},
+      billingSubdivisions: {},
 
       selectedGateway: IS_DEV_MODE ? 'test_gateway' : '', // if dev. mode, set dev friendly defaults
     };
@@ -154,20 +176,6 @@ export default {
     checkout: {
       type: Object,
       default: () => ({}),
-    },
-    /**
-     * default delivery country
-     */
-    defaultDeliveryCountry: {
-      type: String,
-      default: '',
-    },
-    /**
-     * default delivery region
-     */
-    defaultDeliveryRegion: {
-      type: String,
-      default: '',
     },
     /**
      * class to apply to default region select element
@@ -281,12 +289,21 @@ export default {
     },
     'shipping.country': {
       handler(val, oldVal) {
-        debugger;
         if (oldVal !== val) {
           this.shipping.countyState = '';
         }
         // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
-        this.getRegions(val);
+        this.getShippingRegions(val);
+      },
+      immediate: true,
+    },
+    'billing.country': {
+      handler(val, oldVal) {
+        if (oldVal !== val) {
+          this.billing.countyState = '';
+        }
+        // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
+        this.getBillingRegions(val);
       },
       immediate: true,
     },
@@ -321,15 +338,25 @@ export default {
       }).catch(error => console.log('There was an error while fetching countries', error));
     },
     /**
-     * Fetch available shipping regions for the chosen country
+     * Get list of shipping regions for the chosen country
      *
-     * @param {string} deliveryCountry
+     * @param {string}
      */
-    getRegions(deliveryCountryCode) {
+    getShippingRegions(deliveryCountryCode) {
       this.$commerce.services.localeListSubdivisions(deliveryCountryCode)
         .then(resp => {
           this.subdivisions = resp.subdivisions;
-        }).catch(error => console.log('there was an error while fetching subdivisons', error));
+        }).catch(error => console.log('there was an error while fetching shipping subdivisons', error));
+    },
+    /**
+     * Fetch list of billing regions for the chosen country
+     * @param {string}
+     */
+    getBillingRegions(billingCountryCode) {
+      this.$commerce.services.localeListSubdivisions(billingCountryCode)
+        .then(resp => {
+          this.billingSubdivisions = resp.subdivisions;
+        }).catch(error => console.log('there was an error while fetching billing subdivisons', error));
     },
   },
 };
