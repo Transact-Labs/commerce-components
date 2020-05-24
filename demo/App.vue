@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col">
+  <div class="cjs-flex cjs-flex-col">
     Commerce.js x Vue.js !
     Cart :
     <br />
@@ -11,7 +11,7 @@
     <button @click="() => addToCart(1)">Add second  product to cart</button> --
     <button @click="() => removeFromCart(1)">Remove second  product from cart</button>
     <br />
-    <div class="bg-black w-full">
+    <div class="cjs-flex cjs-bg-gray-200 cjs-w-full">
       <ChecPaymentForm
         defaultDeliveryCountry="US"
         defaultDeliveryRegion="FL"
@@ -51,6 +51,8 @@ export default {
     checkoutTokenObject: {},
   }),
   methods: {
+    /* everything here is just a min. working example,
+not best implementation */
     removeFromCart(index) {
       this.$commerce.cart.remove(this.cart.line_items[index].id).then(({ cart }) => {
         this.cart = cart;

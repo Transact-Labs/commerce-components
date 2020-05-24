@@ -1,34 +1,103 @@
 <!-- Payment-form, encapsulates shipping/billing and payment form details-->
 <template>
   <form>
+    <!--
+      TODO: allow two UI modes
+      - either full custom mode where content is given for default slot,
+      and slot props are passed as necessary,
+      - or default mode where inputs are rendered as such by this component,
+      default classes are rendered, unless given custom class for respective indivial input element.
+    -->
     <!-- customer information -->
-    <input name="customerFirstName" v-model="customer.firstName"/>
-    <input name="customerLastName" v-model="customer.lastName" />
-    <input name="customerEmail" v-model="customer.email" />
+    <input name="customerFirstName" placeholder="First name" v-model="customer.firstName"/>
+    <input name="customerLastName" placeholder="Last name" v-model="customer.lastName" />
+    <input name="customerEmail" placeholder="Email" v-model="customer.email" />
 
-    <!-- todo : create select base-list component -->
-    <!-- todo : wrap with slot and use this mark-up as fall-back -->
-    <select
-      :class="[ countrySelectClass ? countrySelectClass : 'payment-form__delivery-country-select']"
-      name="deliveryCountry"
-      v-model="deliveryCountry"
-      placeholder="Delivery Country">
-      <option value="" disabled>Select your country</option>
-      <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
-        {{ countryValue }}
-      </option>
-    </select>
+    <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_shipping_address">
+      <!-- shippping information -->
+      <input
+        name="shippingName"
+        placeholder="Shipping name"
+        v-model="shipping.name"
+      />
+      <input
+        name="shippingStreet"
+        placeholder="Street address"
+        v-model="shipping.street"
+      />
+      <input
+        name="shippingStreet2"
+        placeholder="Street Address 2 (optional)"
+        v-model="shipping.street2"
+      />
+      <input
+        name="shippingTownCity"
+        placeholder="City"
+        v-model="shipping.townCity"
+      />
+      <input
+        name="shippingPostalZipCode"
+        placeholder="Zip code"
+        v-model="shipping.postalZipCode"
+      />
+      <!-- todo : create select base-list component -->
+      <!-- todo : wrap with slot and use this mark-up as fall-back -->
+      <select
+        :class="[ countrySelectClass ? countrySelectClass : 'payment-form__delivery-country-select']"
+        name="shippingCountry"
+        v-model="shipping.country"
+        placeholder="Country">
+        <option value="" disabled>Select your country</option>
+        <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
+          {{ countryValue }}
+        </option>
+      </select>
 
-    <select
-      name="deliveryRegion"
-      :class="[ countryRegionClass ? countryRegionClass : 'payment-form__delivery-country-select']"
-      :disabled="!!!deliveryCountry"
-      v-model="deliveryRegion">
-      <option value="" disabled>Select your states, provinces, or region</option>
-      <option v-for="(subdivisionValue, subdivisionKey) in subdivisions" :value="subdivisionKey" :key="subdivisionKey">
-        {{ subdivisions[subdivisionKey] }}
-      </option>
-    </select>
+      <select
+        name="shippingCountyState"
+        :class="[ countryRegionClass ? countryRegionClass : 'payment-form__delivery-country-select']"
+        v-model="shipping.countyState">
+        <option value="" disabled>Select your states, provinces, or region</option>
+        <option
+          v-for="(subdivisionValue, subdivisionKey) in subdivisions"
+          :value="subdivisionKey"
+          :key="subdivisionKey">
+          {{ subdivisions[subdivisionKey] }}
+        </option>
+      </select>
+    </template>
+
+    <!-- for default mode, also consider adding checkbox
+    to toggle reusing shipping address for billing
+    (since shipping is first in layout in default mode) -->
+    <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_billing_address">
+      <!-- shippping information -->
+      <input
+        name="shippingName"
+        placeholder="Shipping name"
+        v-model="shipping.name"
+      />
+      <input
+        name="shippingStreet"
+        placeholder="Street address"
+        v-model="shipping.street"
+      />
+      <input
+        name="shippingStreet2"
+        placeholder="Street Address 2 (optional)"
+        v-model="shipping.street2"
+      />
+      <input
+        name="shippingTownCity"
+        placeholder="City"
+        v-model="shipping.townCity"
+      />
+      <input
+        name="postalZipCode"
+        placeholder="Zip code"
+        v-model="shipping.postalZipCode"
+      />
+    </template>
   </form>
 </template>
 <script>
@@ -53,7 +122,13 @@ export default {
         street: '',
         street2: '',
         townCity: '',
+        countyState: this.defaultDeliveryRegion || '',
+        country: this.defaultDeliveryCountry || '',
         postalZipCode: '',
+      },
+
+      billing: {
+
       },
 
       selectedShippingMethod: '',
@@ -204,10 +279,11 @@ export default {
       },
       immediate: true,
     },
-    deliveryCountry: {
+    'shipping.country': {
       handler(val, oldVal) {
+        debugger;
         if (oldVal !== val) {
-          this.deliveryRegion = '';
+          this.shipping.countyState = '';
         }
         // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
         this.getRegions(val);
@@ -230,6 +306,8 @@ export default {
     },
     /**
      * emit update:checkout event, for .sync modifier to work
+     * TODO: set up custom v-model for component to optionally allow v-model to be used
+     * as an available alternative to checkout.sync
      */
     emitUpdateCheckout(checkout) {
       this.$emit('update:checkout', checkout);
