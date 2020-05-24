@@ -1,7 +1,11 @@
+<!-- Payment-form, encapsulates shipping/billing and payment form details-->
 <template>
   <form>
+    <!-- customer information -->
+    <input name="customerFirstName" v-model="customer.firstName"/>
+    <input name="customerLastName" v-model="customer.lastName" />
+    <input name="customerEmail" v-model="customer.email" />
 
-    <input name="firstName" v-model="f" className="rounded-0 w-100" />
     <!-- todo : create select base-list component -->
     <!-- todo : wrap with slot and use this mark-up as fall-back -->
     <select
@@ -75,6 +79,13 @@ export default {
   },
   props: {
     /**
+     *  synced checkout (.sync)
+     */
+    checkout: {
+      type: Object,
+      default: () => ({}),
+    },
+    /**
      * default delivery country
      */
     defaultDeliveryCountry: {
@@ -101,16 +112,104 @@ export default {
     countrySelectClass: {
       type: String,
       default: '',
+
+    },
+    /**
+     * identifier id (cart id, product id, permalink) to genereate checkout for
+     *
+     */
+    identifierId: {
+      type: String,
+      default: '',
+    },
+    /**
+     *  the type of identifier. Types: product_id, cart, permalink.
+     */
+    identifierType: {
+      type: String,
+      default: 'cart',
+      validate(type) {
+        return ['product_id', 'cart', 'permalink'].includes(type);
+      },
+    },
+    /**
+     * configuration options
+     */
+    options: {
+      type: Object,
+      default: () => ({}),
     },
   },
   created() {
     if (!this.$commerce) {
       throw Error('Could not detect Commerce.js within <PaymentForm>');
     }
+
     this.getAllCountries();
     this.getRegions(this.deliveryCountry);
+
+    // utilize emitted Commerce.js Cart Events
+    // Cart.Item.Added, Cart.Item.Updated, Cart.Item.Removed, Cart.Deleted, Cart.Emptied
+    // to omit need of cart data being passed via prop by consumer
+    // https://github.com/chec/commerce.js/blob/4cb95203f996d6ece46f622c57bc1bc6d0de25e6/src/commerce.js#L7
+    // TODO: consider later on not generating a new checkout, with generateCheckouttoken
+    // on cart events that aren't cart.emptied, cart.deleted,
+    // and instead utilize $commerce.checkout.getToken to get updated existing token
+    window.addEventListener(
+      'Commercejs.Cart.Item.Removed',
+      () => this.generateCheckoutToken()
+        .then(checkout => this.emitUpdateCheckout(checkout))
+        .catch(error => {
+          console.log('ERROR: Could not generate checkout token', error);
+          this.emitUpdateCheckout({});
+        }),
+    );
+    window.addEventListener(
+      'Commercejs.Cart.Item.Updated',
+      () => this.generateCheckoutToken()
+        .then(checkout => this.emitUpdateCheckout(checkout))
+        .catch(error => {
+          console.log('ERROR: Could not generate checkout token', error);
+          this.emitUpdateCheckout({});
+        }),
+    );
+    window.addEventListener(
+      'Commercejs.Cart.Item.Added',
+      () => this.generateCheckoutToken()
+        .then(checkout => this.emitUpdateCheckout(checkout))
+        .catch(error => {
+          console.log('ERROR: Could not generate checkout token', error);
+          this.emitUpdateCheckout({});
+        }),
+    );
+    window.addEventListener(
+      'Commercejs.Cart.Item.Removed',
+      () => this.generateCheckoutToken()
+        .then(checkout => this.emitUpdateCheckout(checkout))
+        .catch(error => {
+          console.log('ERROR: Could not generate checkout token', error);
+          this.emitUpdateCheckout({});
+        }),
+    );
   },
   watch: {
+    identifierId: {
+      handler(val, oldVal) {
+        if (!oldVal && val) {
+        // on initial creation prop.identifierId may be empty
+        // so, only invoke generateCheckoutToken that relies on indentifierId
+        // only on the subsequent update to identifierId, where the previous indentifierId
+        // was empty/undefined
+          this.generateCheckoutToken()
+            .then(checkout => this.emitUpdateCheckout(checkout))
+            .catch(error => {
+              console.log('ERROR: Could not generate checkout token', error);
+              this.emitUpdateCheckout({});
+            });
+        }
+      },
+      immediate: true,
+    },
     deliveryCountry(prevVal, newVal) {
       if (prevVal !== newVal) {
         this.deliveryRegion = '';
@@ -120,6 +219,24 @@ export default {
     },
   },
   methods: {
+    /**
+     * generate checkout token
+     */
+    generateCheckoutToken() {
+      return this.$commerce.checkout.generateToken(this.identifierId, { type: this.identifierType })
+        .then(checkout => checkout)
+        .catch(error => {
+          // eslint-disable-next-line no-console
+          console.log('ERROR: GENERATING CHECKOUT TOKEN', error);
+          throw error;
+        });
+    },
+    /**
+     * emit update:checkout event, for .sync modifier to work
+     */
+    emitUpdateCheckout(checkout) {
+      this.$emit('update:checkout', checkout);
+    },
     /**
      * Fetch all available countries for shipping
      */
