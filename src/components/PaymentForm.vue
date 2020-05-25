@@ -392,6 +392,8 @@ export default {
         })
         .catch(error => {
           // eslint-disable-next-line no-console
+          this.selectedShippingMethod = '';
+          this.shippingOptions = [];
           console.log('ERROR: GENERATING CHECKOUT TOKEN', error);
           throw error;
         });
