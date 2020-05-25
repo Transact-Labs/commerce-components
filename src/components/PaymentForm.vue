@@ -1,17 +1,22 @@
 <!-- Payment-form, encapsulates shipping/billing and payment form details-->
 <template>
-  <div>
+  <form>
+      <!--
+        Two UI template Modes
+         full-custom mode, default mode
+        - full-custom mode is enabled by providing a default slot,
+        the slotProps consist of this component $data, and a callback
+        updateData expecting a dot-delimited property name, and value
+        to update property with. for example this.$data.shipping.name/slotProps.shipping.name can be updated by
+        slotProps.updateDate('shipping.name', 'john doe');
+        - default mode where inputs are rendered as such by this component,
+        default classes are rendered, unless given custom class for respective indivial input element.
+        useful for quick developing with tailwind classes
+      -->
     <template v-if="$scopedSlots.default"> <!-- really should be $slot.default-->
       <slot v-bind="$data" :updateData="updateData" />
     </template>
-    <form v-else>
-      <!--
-        TODO: allow two UI modes
-        - either full custom mode where content is given for default slot,
-        and slot props are passed as necessary,
-        - or default mode where inputs are rendered as such by this component,
-        default classes are rendered, unless given custom class for respective indivial input element.
-      -->
+    <template v-else>
       <!-- customer information -->
       <input name="customerFirstName" placeholder="First name" v-model="customer.firstName"/>
       <input name="customerLastName" placeholder="Last name" v-model="customer.lastName" />
@@ -131,8 +136,8 @@
           {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
         </option>
       </select>
-    </form>
-  </div>
+    </template>
+  </form>
 </template>
 <script>
 import ccFormat from '@/utils/ccFormat';
