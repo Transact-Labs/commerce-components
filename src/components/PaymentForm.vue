@@ -1,133 +1,138 @@
 <!-- Payment-form, encapsulates shipping/billing and payment form details-->
 <template>
-  <form>
-    <!--
-      TODO: allow two UI modes
-      - either full custom mode where content is given for default slot,
-      and slot props are passed as necessary,
-      - or default mode where inputs are rendered as such by this component,
-      default classes are rendered, unless given custom class for respective indivial input element.
-    -->
-    <!-- customer information -->
-    <input name="customerFirstName" placeholder="First name" v-model="customer.firstName"/>
-    <input name="customerLastName" placeholder="Last name" v-model="customer.lastName" />
-    <input name="customerEmail" placeholder="Email" v-model="customer.email" />
-
-    <!-- shippping information -->
-    <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_shipping_address">
-      <input
-        name="shippingName"
-        placeholder="Shipping name"
-        v-model="shipping.name"
-      />
-      <input
-        name="shippingStreet"
-        placeholder="Street address"
-        v-model="shipping.street"
-      />
-      <input
-        name="shippingStreet2"
-        placeholder="Street Address 2 (optional)"
-        v-model="shipping.street2"
-      />
-      <input
-        name="shippingTownCity"
-        placeholder="City"
-        v-model="shipping.townCity"
-      />
-      <input
-        name="shippingPostalZipCode"
-        placeholder="Zip code"
-        v-model="shipping.postalZipCode"
-      />
-      <!-- todo : create select base-list component -->
-      <select
-        :class="[ countrySelectClass ? countrySelectClass : 'payment-form__delivery-country-select']"
-        name="shippingCountry"
-        v-model="shipping.country">
-        <option value="" disabled>Select your shipping country</option>
-        <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
-          {{ countryValue }}
-        </option>
-      </select>
-
-      <select
-        name="shippingCountyState"
-        :class="[ countryRegionClass ? countryRegionClass : 'payment-form__delivery-country-select']"
-        v-model="shipping.countyState">
-        <option value="" disabled>Select your states, provinces, or region</option>
-        <option
-          v-for="(subdivisionValue, subdivisionKey) in subdivisions"
-          :value="subdivisionKey"
-          :key="subdivisionKey">
-          {{ subdivisions[subdivisionKey] }}
-        </option>
-      </select>
+  <div>
+    <template v-if="$scopedSlots.default"> <!-- really should be $slot.default-->
+      <slot v-bind="$data" :updateData="updateData" />
     </template>
+    <form v-else>
+      <!--
+        TODO: allow two UI modes
+        - either full custom mode where content is given for default slot,
+        and slot props are passed as necessary,
+        - or default mode where inputs are rendered as such by this component,
+        default classes are rendered, unless given custom class for respective indivial input element.
+      -->
+      <!-- customer information -->
+      <input name="customerFirstName" placeholder="First name" v-model="customer.firstName"/>
+      <input name="customerLastName" placeholder="Last name" v-model="customer.lastName" />
+      <input name="customerEmail" placeholder="Email" v-model="customer.email" />
 
-    <!-- billing information -->
-    <!-- for default mode, also consider adding checkbox
-    to toggle reusing shipping address for billing
-    (since shipping is first in layout in default mode) -->
-    <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_billing_address">
-      <input
-        name="billingName"
-        placeholder="Billing name"
-        v-model="billing.name"
-      />
-      <input
-        name="billingStreet"
-        placeholder="Billing street address"
-        v-model="billing.street"
-      />
-      <input
-        name="billingStreet2"
-        placeholder="Billing street address 2 (optional)"
-        v-model="billing.street2"
-      />
-      <input
-        name="billingTownCity"
-        placeholder="Billing city"
-        v-model="billing.townCity"
-      />
-      <input
-        name="billingPostalZipCode"
-        placeholder="Billing zip code"
-        v-model="billing.postalZipCode"
-      />
-      <!-- todo : create select base-list component -->
+      <!-- shippping information -->
+      <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_shipping_address">
+        <input
+          name="shippingName"
+          placeholder="Shipping name"
+          v-model="shipping.name"
+        />
+        <input
+          name="shippingStreet"
+          placeholder="Street address"
+          v-model="shipping.street"
+        />
+        <input
+          name="shippingStreet2"
+          placeholder="Street Address 2 (optional)"
+          v-model="shipping.street2"
+        />
+        <input
+          name="shippingTownCity"
+          placeholder="City"
+          v-model="shipping.townCity"
+        />
+        <input
+          name="shippingPostalZipCode"
+          placeholder="Zip code"
+          v-model="shipping.postalZipCode"
+        />
+        <!-- todo : create select base-list component -->
+        <select
+          :class="[ countrySelectClass ? countrySelectClass : 'payment-form__delivery-country-select']"
+          name="shippingCountry"
+          v-model="shipping.country">
+          <option value="" disabled>Select your shipping country</option>
+          <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
+            {{ countryValue }}
+          </option>
+        </select>
+
+        <select
+          name="shippingCountyState"
+          :class="[ countryRegionClass ? countryRegionClass : 'payment-form__delivery-country-select']"
+          v-model="shipping.countyState">
+          <option value="" disabled>Select your states, provinces, or region</option>
+          <option
+            v-for="(subdivisionValue, subdivisionKey) in subdivisions"
+            :value="subdivisionKey"
+            :key="subdivisionKey">
+            {{ subdivisions[subdivisionKey] }}
+          </option>
+        </select>
+      </template>
+
+      <!-- billing information -->
+      <!-- for default mode, also consider adding checkbox
+      to toggle reusing shipping address for billing
+      (since shipping is first in layout in default mode) -->
+      <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_billing_address">
+        <input
+          name="billingName"
+          placeholder="Billing name"
+          v-model="billing.name"
+        />
+        <input
+          name="billingStreet"
+          placeholder="Billing street address"
+          v-model="billing.street"
+        />
+        <input
+          name="billingStreet2"
+          placeholder="Billing street address 2 (optional)"
+          v-model="billing.street2"
+        />
+        <input
+          name="billingTownCity"
+          placeholder="Billing city"
+          v-model="billing.townCity"
+        />
+        <input
+          name="billingPostalZipCode"
+          placeholder="Billing zip code"
+          v-model="billing.postalZipCode"
+        />
+        <!-- todo : create select base-list component -->
+        <select
+          name="billingCountry"
+          v-model="billing.country">
+          <option value="" disabled>Select your billing country</option>
+          <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
+            {{ countryValue }}
+          </option>
+        </select>
+        <select
+          name="billingCountyState"
+          v-model="billing.countyState">
+          <option value="" disabled>Select your states, provinces, or region</option>
+          <option
+            v-for="(subdivisionValue, subdivisionKey) in billingSubdivisions"
+            :value="subdivisionKey"
+            :key="subdivisionKey">
+            {{ billingSubdivisions[subdivisionKey] }}
+          </option>
+        </select>
+      </template>
+
+      <!-- shipping method/option -->
       <select
-        name="billingCountry"
-        v-model="billing.country">
-        <option value="" disabled>Select your billing country</option>
-        <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
-          {{ countryValue }}
+        v-if="checkout && checkout.conditionals && checkout.conditionals.has_physical_delivery"
+        name="shippingMethod"
+        v-model="selectedShippingMethod">
+        <option value="" disabled>Select a shipping method</option>
+        <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
+          {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
         </option>
       </select>
-      <select
-        name="billingCountyState"
-        v-model="billing.countyState">
-        <option value="" disabled>Select your states, provinces, or region</option>
-        <option
-          v-for="(subdivisionValue, subdivisionKey) in billingSubdivisions"
-          :value="subdivisionKey"
-          :key="subdivisionKey">
-          {{ billingSubdivisions[subdivisionKey] }}
-        </option>
-      </select>
-    </template>
-
-    <!-- shipping method/option -->
-    <select
-      v-if="checkout && checkout.conditionals && checkout.conditionals.has_physical_delivery"
-      name="shippingMethod"
-      v-model="selectedShippingMethod">
-      <option value="" disabled>Select a shipping method</option>
-      <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
-        {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
-      </option>
-    </select>
-  </form>
+    </form>
+  </div>
 </template>
 <script>
 import ccFormat from '@/utils/ccFormat';
@@ -303,7 +308,12 @@ export default {
         if (oldVal !== val) {
           this.shipping.countyState = '';
           if (!_isEmpty(this.checkout)) {
-            this.generateCheckoutToken();
+            this.generateCheckoutToken()
+              .then(checkout => this.emitUpdateCheckout(checkout))
+              .catch(error => {
+                console.log('ERROR: Could not generate checkout token', error);
+                this.emitUpdateCheckout({});
+              });
           }
         }
         // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
@@ -314,7 +324,12 @@ export default {
     'shipping.countyState': function handler(val, oldVal) {
       if (oldVal !== val) {
         if (!_isEmpty(this.checkout)) {
-          this.generateCheckoutToken();
+          this.generateCheckoutToken()
+            .then(checkout => this.emitUpdateCheckout(checkout))
+            .catch(error => {
+              console.log('ERROR: Could not generate checkout token', error);
+              this.emitUpdateCheckout({});
+            });
         }
       }
     },
@@ -341,12 +356,30 @@ export default {
   },
   methods: {
     /**
+     * callback passed to slot to allow
+     * mutating of this component's data
+     * without mutating slot props
+     */
+    updateData(propertyName, value) {
+      if (!propertyName) return;
+      const splitPropertyName = propertyName.split('.');
+      // as of now $data structure is only one level deep and
+      // and not configurable, so only check if there's
+      // nested property by checking if splitPropertyName is
+      // greater than 1
+      if (splitPropertyName.length > 1) {
+        this.$data[splitPropertyName[0]][splitPropertyName[1]] = value;
+        return;
+      }
+      this.$data[propertyName] = value;
+    },
+    /**
      * generate checkout token
      */
     generateCheckoutToken() {
+      this.selectedShippingMethod = '';
       return this.$commerce.checkout.generateToken(this.identifierId, { type: this.identifierType })
         .then(checkout => {
-          this.selectedShippingMethod = '';
           // reset currently selected shipping method as it may not be accurate now that shipping options
           // will be fetched below based of new generated checkout.id
           this.getShippingOptionsForCheckout(checkout.id, this.shipping.country, this.shipping.countyState);

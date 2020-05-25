@@ -17,14 +17,25 @@
         defaultDeliveryRegion="FL"
         :identifierId="cart.id"
         :checkout.sync="checkoutTokenObject"
-      />
+        v-slot="{ shippingOptions, selectedShippingMethod, updateData }"
+      >
+          <select
+            name="fulfillment[shipping_method]"
+            @change="(e) => updateData('selectedShippingMethod', e.target.value)"
+            :value="selectedShippingMethod">
+            <option value="" disabled>Select a delivery method</option>
+            <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
+              {{ `${option.description} - $${option.price.formatted_with_code}` }}
+            </option>
+          </select>
+      </ChecPaymentForm>
       <br />
-      <p>
+      <!-- <p>
         "the checkout is"
         {{
           JSON.stringify(checkoutTokenObject, null, 2)
         }}
-      </p>
+      </p> -->
     </div>
   </div>
 </template>
