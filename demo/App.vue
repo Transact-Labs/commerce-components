@@ -17,10 +17,10 @@
         defaultDeliveryRegion="FL"
         :identifierId="cart.id"
         :checkout.sync="checkoutTokenObject"
-        v-slot="{ shippingOptions, selectedShippingMethod, updateData }"
+
+        @order:error="handleCaptureOrderErrors"
       >
-        <!-- shipping method/option -->
-        <select
+        <!-- <select
           name="shippingMethod"
           :value="selectedShippingMethod"
           @change="e => updateData('selectedShippingMethod', e.target.value)">
@@ -28,7 +28,7 @@
           <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
             {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
           </option>
-        </select>
+        </select> -->
       </ChecPaymentForm>
       <br />
       <!-- <p>
@@ -69,6 +69,10 @@ not best implementation */
       this.$commerce.cart.remove(this.cart.line_items[index].id).then(({ cart }) => {
         this.cart = cart;
       });
+    },
+    // eslint-disable-next-line no-unused-vars
+    handleCaptureOrderErrors(error) {
+      debugger;
     },
     addToCart(index) {
       this.$commerce.cart.add(this.products[index].id).then(({ cart }) => {

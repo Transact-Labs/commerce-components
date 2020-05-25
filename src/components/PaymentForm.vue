@@ -3,8 +3,8 @@
   <form>
       <!--
         Two UI template Modes
-         full-custom mode, default mode
-        - full-custom mode is enabled by providing a default slot,
+        custom(slot) mode, default mode
+        - custom mode is enabled by providing a default slot,
         the slotProps consist of this component $data, and a callback
         updateData expecting a dot-delimited property name, and value
         to update property with. for example this.$data.shipping.name/slotProps.shipping.name can be updated by
@@ -12,6 +12,7 @@
         - default mode where inputs are rendered as such by this component,
         default classes are rendered, unless given custom class for respective indivial input element.
         useful for quick developing with tailwind classes
+          - add labels in default mode post-mvp/mwe
       -->
     <template v-if="$scopedSlots.default"> <!-- really should be $slot.default-->
       <slot v-bind="$data" :updateData="updateData" />
@@ -46,7 +47,7 @@
         />
         <input
           name="shippingPostalZipCode"
-          placeholder="Zip code"
+          placeholder="Shipping zip code"
           v-model="shipping.postalZipCode"
         />
         <!-- todo : create select base-list component -->
@@ -136,12 +137,56 @@
           {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
         </option>
       </select>
+
+      <!-- payment info -->
+      <!-- TODO: implement stripe.js and element
+      if gateway stripe available, and configured as the payment -->
+      <input
+        type="number"
+        name="cardNumber"
+        v-model="card.number"
+        placeholder="Card number"
+      />
+      <div>
+        <input
+          type="number"
+          name="expMonth"
+          v-model="card.expMonth"
+          placeholder="expiry month"
+        />
+        <input
+          type="number"
+          name="expYear"
+          v-model="card.expYear"
+          placeholder="expiry year (yyyy)"
+        />
+      </div>
+      <div>
+        <input
+          type="number"
+          name="cardCvc"
+          v-model="card.cvc"
+          placeholder="Card cvc"
+        />
+        <input
+          type="number"
+          name="cardBillingPostalZipCode"
+          v-model="card.billingPostalZipcode"
+          placeholder="Card billing zip code"
+        />
+      </div>
+      <button
+        @click.prevent="defaultModeCaptureOrder"
+        :disabled="$_isEmpty(checkout)"
+      >
+        Checkout
+      </button>
     </template>
   </form>
 </template>
 <script>
-import ccFormat from '@/utils/ccFormat';
 import _isEmpty from 'lodash.isempty';
+// import { loadStripe } from '@stripe/stripe-js';
 
 const IS_DEV_MODE = process.env.NODE_ENV === 'development';
 export default {
@@ -177,7 +222,7 @@ export default {
       selectedShippingMethod: '',
 
       card: {
-        number: IS_DEV_MODE ? ccFormat('4242424242424242') : '', // if dev. mode, set dev friendly defaults
+        number: '', // if dev. mode, set dev friendly defaults
         expMonth: '',
         expYear: '',
         cvc: '',
@@ -213,7 +258,6 @@ export default {
     countrySelectClass: {
       type: String,
       default: '',
-
     },
     /**
      * identifier id (cart id, product id, permalink) to genereate checkout for
@@ -245,6 +289,7 @@ export default {
     if (!this.$commerce) {
       throw Error('Could not detect Commerce.js within <PaymentForm>');
     }
+    this.$_isEmpty = _isEmpty;
     this.getAllCountries();
     // utilize emitted Commerce.js Cart Events
     // Cart.Item.Added, Cart.Item.Updated, Cart.Item.Removed, Cart.Deleted, Cart.Emptied
@@ -256,38 +301,22 @@ export default {
     window.addEventListener(
       'Commercejs.Cart.Item.Removed',
       () => this.generateCheckoutToken()
-        .then(checkout => this.emitUpdateCheckout(checkout))
-        .catch(error => {
-          console.log('ERROR: Could not generate checkout token', error);
-          this.emitUpdateCheckout({});
-        }),
+        .then(checkout => this.emitUpdateCheckout(checkout)),
     );
     window.addEventListener(
       'Commercejs.Cart.Item.Updated',
       () => this.generateCheckoutToken()
-        .then(checkout => this.emitUpdateCheckout(checkout))
-        .catch(error => {
-          console.log('ERROR: Could not generate checkout token', error);
-          this.emitUpdateCheckout({});
-        }),
+        .then(checkout => this.emitUpdateCheckout(checkout)),
     );
     window.addEventListener(
       'Commercejs.Cart.Item.Added',
       () => this.generateCheckoutToken()
-        .then(checkout => this.emitUpdateCheckout(checkout))
-        .catch(error => {
-          console.log('ERROR: Could not generate checkout token', error);
-          this.emitUpdateCheckout({});
-        }),
+        .then(checkout => this.emitUpdateCheckout(checkout)),
     );
     window.addEventListener(
       'Commercejs.Cart.Item.Removed',
       () => this.generateCheckoutToken()
-        .then(checkout => this.emitUpdateCheckout(checkout))
-        .catch(error => {
-          console.log('ERROR: Could not generate checkout token', error);
-          this.emitUpdateCheckout({});
-        }),
+        .then(checkout => this.emitUpdateCheckout(checkout)),
     );
   },
   watch: {
@@ -299,11 +328,7 @@ export default {
         // on the subsequent update to identifierId, where the previous indentifierId
         // was empty/undefined
           this.generateCheckoutToken()
-            .then(checkout => this.emitUpdateCheckout(checkout))
-            .catch(error => {
-              console.log('ERROR: Could not generate checkout token', error);
-              this.emitUpdateCheckout({});
-            });
+            .then(checkout => this.emitUpdateCheckout(checkout));
         }
       },
       immediate: true,
@@ -314,11 +339,7 @@ export default {
           this.shipping.countyState = '';
           if (!_isEmpty(this.checkout)) {
             this.generateCheckoutToken()
-              .then(checkout => this.emitUpdateCheckout(checkout))
-              .catch(error => {
-                console.log('ERROR: Could not generate checkout token', error);
-                this.emitUpdateCheckout({});
-              });
+              .then(checkout => this.emitUpdateCheckout(checkout));
           }
         }
         // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
@@ -330,11 +351,7 @@ export default {
       if (oldVal !== val) {
         if (!_isEmpty(this.checkout)) {
           this.generateCheckoutToken()
-            .then(checkout => this.emitUpdateCheckout(checkout))
-            .catch(error => {
-              console.log('ERROR: Could not generate checkout token', error);
-              this.emitUpdateCheckout({});
-            });
+            .then(checkout => this.emitUpdateCheckout(checkout));
         }
       }
     },
@@ -360,6 +377,84 @@ export default {
     },
   },
   methods: {
+    /**
+     * to prevent catching this.captureError promise's rejected error
+     *  in template inline with v-on,
+     * (captureOrder is also used as slotProps.callback in custom/slot mode, hence reason why it returns promise)
+     */
+    defaultModeCaptureOrder() {
+      this.captureOrder()
+        .catch(error => {
+          console.log('error while attempting to capture order', error);
+        });
+    },
+    /**
+     * capture order
+     */
+    captureOrder(e) {
+      if (e) {
+        e.preventDefault();
+      }
+      // set up line_items object and inner variant object for order object below
+      const lineItems = this.checkout.live.line_items.reduce((obj, lineItem) => {
+        const variants = lineItem.variants.reduce((_obj, variant) => {
+          // eslint-disable-next-line no-param-reassign
+          _obj[variant.variant_id] = variant.option_id;
+          return _obj;
+        }, {});
+        // eslint-disable-next-line no-param-reassign
+        obj[lineItem.id] = { ...lineItem, variants };
+        return obj;
+      }, {});
+      // TODO: add support for extrafields
+      // construct order object
+      const order = {
+        line_items: lineItems,
+        customer: {
+          firstname: this.customer.firstName,
+          lastname: this.customer.lastName,
+          email: this.customer.email,
+        },
+        shipping: {
+          name: this.shipping.name,
+          country: this.shipping.country,
+          street: this.shipping.street + this.shipping.street2,
+          town_city: this.shipping.townCity,
+          county_state: this.shipping.countyState,
+          postal_zip_code: this.shipping.postalZipCode,
+        },
+        fulfillment: {
+          shipping_method: this.selectedShippingMethod,
+        },
+        payment: {
+          gateway: this.selectedGateway,
+        },
+      };
+
+      // TODO: for mvp only support test_gateay, ideally stripe(token), razor(payment_id), square (nonce), paypal
+      // if test gateway selected add necessary card data
+      // for the order to be completed.
+      if (this.selectedGateway === 'test_gateway') {
+        order.payment.card = {
+          number: this.card.number,
+          expiry_month: this.card.expMonth,
+          expiry_year: this.card.expYear,
+          cvc: this.card.cvc,
+          postal_zip_code: this.card.billingPostalZipcode,
+        };
+      }
+      return this.$commerce.checkout.capture(this.checkout.id, order)
+        .then(resp => {
+          // reset checkout, and set global order-receipt state
+          // alias event
+          this.$emit('order:success', resp);
+          return resp;
+        }).catch(error => {
+          this.$emit('order:error', error);
+          console.log('error while attempting to capture order, emitted error with order:error');
+          throw error;
+        });
+    },
     /**
      * callback passed to slot to allow
      * mutating of this component's data
@@ -394,6 +489,7 @@ export default {
           // eslint-disable-next-line no-console
           this.selectedShippingMethod = '';
           this.shippingOptions = [];
+          this.emitUpdateCheckout({});
           console.log('ERROR: GENERATING CHECKOUT TOKEN', error);
           throw error;
         });
@@ -440,7 +536,10 @@ export default {
     getShippingOptionsForCheckout(checkoutId, country = 'US', region) {
       return this.$commerce.checkout.getShippingOptions(checkoutId, { country, region })
         .then(shippingOptions => { this.shippingOptions = shippingOptions; })
-        .catch(error => console.log('ERROR: error while fetching shipping options for checkout', error));
+        .catch(error => {
+          this.shippingOptions = [];
+          console.log('ERROR: error while fetching shipping options for checkout', error);
+        });
     },
     // Validates a shipping method for the
     // provided checkout token, returning checkout.live object if valid, and applies it to the checkout.
