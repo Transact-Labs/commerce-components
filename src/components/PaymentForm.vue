@@ -13,8 +13,8 @@
     <input name="customerLastName" placeholder="Last name" v-model="customer.lastName" />
     <input name="customerEmail" placeholder="Email" v-model="customer.email" />
 
+    <!-- shippping information -->
     <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_shipping_address">
-      <!-- shippping information -->
       <input
         name="shippingName"
         placeholder="Shipping name"
@@ -65,11 +65,11 @@
       </select>
     </template>
 
+    <!-- billing information -->
     <!-- for default mode, also consider adding checkbox
     to toggle reusing shipping address for billing
     (since shipping is first in layout in default mode) -->
     <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_billing_address">
-      <!-- shippping information -->
       <input
         name="billingName"
         placeholder="Billing name"
@@ -116,6 +116,7 @@
         </option>
       </select>
     </template>
+
   </form>
 </template>
 <script>
@@ -165,6 +166,7 @@ export default {
       countries: {},
       subdivisions: {},
       billingSubdivisions: {},
+      shippingOptions: [],
 
       selectedGateway: IS_DEV_MODE ? 'test_gateway' : '', // if dev. mode, set dev friendly defaults
     };
@@ -222,9 +224,7 @@ export default {
     if (!this.$commerce) {
       throw Error('Could not detect Commerce.js within <PaymentForm>');
     }
-
     this.getAllCountries();
-
     // utilize emitted Commerce.js Cart Events
     // Cart.Item.Added, Cart.Item.Updated, Cart.Item.Removed, Cart.Deleted, Cart.Emptied
     // to omit need of cart data being passed via prop by consumer
@@ -308,13 +308,25 @@ export default {
       immediate: true,
     },
   },
+  computed: {
+    shippingOptionsById() {
+      return this.shippingOptions.reduce((obj, option) => {
+        // eslint-disable-next-line no-param-reassign
+        obj[option.id] = option;
+        return obj;
+      }, {});
+    },
+  },
   methods: {
     /**
      * generate checkout token
      */
     generateCheckoutToken() {
       return this.$commerce.checkout.generateToken(this.identifierId, { type: this.identifierType })
-        .then(checkout => checkout)
+        .then(checkout => {
+          this.getShippingOptionsForCheckout(checkout.id, this.shipping.country, this.shipping.countyState);
+          return checkout;
+        })
         .catch(error => {
           // eslint-disable-next-line no-console
           console.log('ERROR: GENERATING CHECKOUT TOKEN', error);
@@ -357,6 +369,13 @@ export default {
         .then(resp => {
           this.billingSubdivisions = resp.subdivisions;
         }).catch(error => console.log('there was an error while fetching billing subdivisons', error));
+    },
+    // Use commerce.js checkout helper, commerce.checkout.getShippingOptions
+    // to return list of available shipping methods for the provided checkout token
+    getShippingOptionsForCheckout(checkoutId, country = 'US', region) {
+      return this.$commerce.checkout.getShippingOptions(checkoutId, { country, region })
+        .then(shippingOptions => { this.shippingOptions = shippingOptions; })
+        .catch(error => console.log('ERROR: error while fetching shipping options for checkout', error));
     },
   },
 };
