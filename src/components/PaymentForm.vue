@@ -119,17 +119,19 @@
 
     <!-- shipping method/option -->
     <select
+      v-if="checkout && checkout.conditionals && checkout.conditionals.has_physical_delivery"
       name="shippingMethod"
       v-model="selectedShippingMethod">
       <option value="" disabled>Select a shipping method</option>
       <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
-        {{ `${option.description} - $${option.price.formatted_with_code}` }}
+        {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
       </option>
     </select>
   </form>
 </template>
 <script>
 import ccFormat from '@/utils/ccFormat';
+import _isEmpty from 'lodash.isempty';
 
 const IS_DEV_MODE = process.env.NODE_ENV === 'development';
 export default {
@@ -300,11 +302,21 @@ export default {
       handler(val, oldVal) {
         if (oldVal !== val) {
           this.shipping.countyState = '';
+          if (!_isEmpty(this.checkout)) {
+            this.generateCheckoutToken();
+          }
         }
         // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
         this.getShippingRegions(val);
       },
       immediate: true,
+    },
+    'shipping.countyState': function handler(val, oldVal) {
+      if (oldVal !== val) {
+        if (!_isEmpty(this.checkout)) {
+          this.generateCheckoutToken();
+        }
+      }
     },
     'billing.country': {
       handler(val, oldVal) {
@@ -316,6 +328,16 @@ export default {
       },
       immediate: true,
     },
+    selectedShippingMethod(val, oldVal) {
+      if (oldVal !== val) {
+        this.validateAndSetShippingOptionInCheckout(
+          this.checkout.id,
+          this.selectedShippingMethod,
+          this.shipping.country,
+          this.shipping.region,
+        ).catch(this.generateCheckoutToken);
+      }
+    },
   },
   methods: {
     /**
@@ -324,6 +346,9 @@ export default {
     generateCheckoutToken() {
       return this.$commerce.checkout.generateToken(this.identifierId, { type: this.identifierType })
         .then(checkout => {
+          this.selectedShippingMethod = '';
+          // reset currently selected shipping method as it may not be accurate now that shipping options
+          // will be fetched below based of new generated checkout.id
           this.getShippingOptionsForCheckout(checkout.id, this.shipping.country, this.shipping.countyState);
           return checkout;
         })
@@ -376,6 +401,22 @@ export default {
       return this.$commerce.checkout.getShippingOptions(checkoutId, { country, region })
         .then(shippingOptions => { this.shippingOptions = shippingOptions; })
         .catch(error => console.log('ERROR: error while fetching shipping options for checkout', error));
+    },
+    // Validates a shipping method for the
+    // provided checkout token, returning checkout.live object if valid, and applies it to the checkout.
+    validateAndSetShippingOptionInCheckout(checkoutId, shippingOptionId, country, region) {
+      return this.$commerce.checkout.checkShippingOption(checkoutId, {
+        shipping_option_id: shippingOptionId,
+        country,
+        region,
+      }).then(resp => {
+        if (resp.valid) {
+          this.emitUpdateCheckout({ ...this.checkout, live: resp.live });
+        }
+      }).catch(error => {
+        console.log('error while attempting to update live object with selected shipping option');
+        throw error;
+      });
     },
   },
 };

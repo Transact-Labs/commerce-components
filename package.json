@@ -17,6 +17,7 @@
     "@vue/eslint-config-airbnb": "^5.0.2",
     "autoprefixer": "^9.7.4",
     "core-js": "^3.4.4",
+    "lodash.isempty": "^4.4.0",
     "lodash.uniqueid": "^4.0.1",
     "postcss-assets": "^5.0.0",
     "tailwindcss": "^1.2.0",
