@@ -117,6 +117,15 @@
       </select>
     </template>
 
+    <!-- shipping method/option -->
+    <select
+      name="shippingMethod"
+      v-model="selectedShippingMethod">
+      <option value="" disabled>Select a shipping method</option>
+      <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
+        {{ `${option.description} - $${option.price.formatted_with_code}` }}
+      </option>
+    </select>
   </form>
 </template>
 <script>
@@ -306,15 +315,6 @@ export default {
         this.getBillingRegions(val);
       },
       immediate: true,
-    },
-  },
-  computed: {
-    shippingOptionsById() {
-      return this.shippingOptions.reduce((obj, option) => {
-        // eslint-disable-next-line no-param-reassign
-        obj[option.id] = option;
-        return obj;
-      }, {});
     },
   },
   methods: {
