@@ -328,7 +328,7 @@ export default {
       // TODO: for mvp only support test_gateay, ideally stripe(token), razor(payment_id), square (nonce), paypal
       // if test gateway selected add necessary card data
       // for the order to be completed.
-      if (this.selectedGateway === 'test_gateway') {
+      if (order.payment.gateway === 'test_gateway') {
         order.payment.card = {
           number: card.number,
           expiry_month: card.expMonth,
