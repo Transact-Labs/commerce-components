@@ -14,16 +14,13 @@
     <br />
     <div class="cjs-flex cjs-bg-gray-200 cjs-w-full">
       <ChecPaymentForm
-        defaultDeliveryCountry="US"
-        defaultDeliveryRegion="FL"
         :identifierId="cart.id"
         :checkout.sync="checkoutTokenObject"
 
         @order:error="handleCaptureOrderErrors"
 
-        v-slot="{ selectedShippingMethod, shippingOptions, updateData, captureOrder }"
       >
-        <select
+        <!-- <select
           name="shippingMethod"
           :value="selectedShippingMethod"
           @change="e => updateData('selectedShippingMethod', e.target.value)">
@@ -35,7 +32,7 @@
 
         <button @click="customCaptureOrder(captureOrder)">
           make a payment
-        </button>
+        </button> -->
       </ChecPaymentForm>
       <br />
       <!-- <p>
