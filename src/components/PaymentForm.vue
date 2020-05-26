@@ -1,6 +1,6 @@
 <!-- Payment-form, encapsulates shipping/billing and payment form details-->
 <template>
-  <form>
+  <form @submit.prevent>
       <!--
         Two UI template Modes
         custom(slot) mode, default mode
@@ -15,7 +15,7 @@
           - add labels in default mode post-mvp/mwe
       -->
     <template v-if="$scopedSlots.default"> <!-- really should be $slot.default-->
-      <slot v-bind="$data" :updateData="updateData" />
+      <slot v-bind="$data" :updateData="updateData" :captureOrder="captureOrder" />
     </template>
     <template v-else>
       <!-- customer information -->
@@ -391,10 +391,7 @@ export default {
     /**
      * capture order
      */
-    captureOrder(e) {
-      if (e) {
-        e.preventDefault();
-      }
+    captureOrder() {
       // set up line_items object and inner variant object for order object below
       const lineItems = this.checkout.live.line_items.reduce((obj, lineItem) => {
         const variants = lineItem.variants.reduce((_obj, variant) => {

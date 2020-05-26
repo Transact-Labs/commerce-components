@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 <template>
   <div class="cjs-flex cjs-flex-col">
     Commerce.js x Vue.js !
@@ -19,8 +20,10 @@
         :checkout.sync="checkoutTokenObject"
 
         @order:error="handleCaptureOrderErrors"
+
+        v-slot="{ selectedShippingMethod, shippingOptions, updateData, captureOrder }"
       >
-        <!-- <select
+        <select
           name="shippingMethod"
           :value="selectedShippingMethod"
           @change="e => updateData('selectedShippingMethod', e.target.value)">
@@ -28,7 +31,11 @@
           <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
             {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
           </option>
-        </select> -->
+        </select>
+
+        <button @click="customCaptureOrder(captureOrder)">
+          make a payment
+        </button>
       </ChecPaymentForm>
       <br />
       <!-- <p>
@@ -61,8 +68,49 @@ export default {
     cart: {},
     products: [],
     checkoutTokenObject: {},
+    errors: {},
   }),
   methods: {
+    /**
+     * custom captureOrder method
+     */
+    customCaptureOrder(captureOrderCallBack) {
+      // can handle successful response from order capture as resolved value from returned Promise
+      // or on <PaymentForm>'s @order:success event
+      // can also handle error response from capture order attempt here or on <PaymentForm>'s @order:error
+      // event e.g. v-on:order:error="(error) => error"
+      captureOrderCallBack()
+        .then(resp => {
+          console.log('💸💸 YAY ORDER SUCCESSFUL!', resp);
+        })
+        .catch(({ data: { error = {} } }) => {
+          let errorToAlert = '';
+          if (error.type === 'validation') {
+            console.log('error while capturing order', error.message);
+
+            error.message.forEach(({ param, _error }) => {
+              this.errors = {
+                ...this.errors,
+                [param]: _error,
+              };
+            });
+
+            errorToAlert = error.message.reduce((string, __error) => `${string} ${__error.error}`, '');
+          }
+
+          if (error.type === 'gateway_error' || error.type === 'not_valid' || error.type === 'bad_request') {
+            this.errors = {
+              ...this.errors,
+              [(error.type === 'not_valid' ? 'fulfillment[shipping_method]' : error.type)]: error.message,
+            };
+            errorToAlert = error.message;
+          }
+          if (errorToAlert) {
+            // eslint-disable-next-line no-alert
+            alert(errorToAlert);
+          }
+        });
+    },
     /* everything here is just a min. working example,
 not best implementation */
     removeFromCart(index) {
@@ -72,7 +120,8 @@ not best implementation */
     },
     // eslint-disable-next-line no-unused-vars
     handleCaptureOrderErrors(error) {
-      debugger;
+      // eslint-disable-next-line no-alert
+      alert(`alerting checkout errors from event order:error ${JSON.stringify(error)}`);
     },
     addToCart(index) {
       this.$commerce.cart.add(this.products[index].id).then(({ cart }) => {
