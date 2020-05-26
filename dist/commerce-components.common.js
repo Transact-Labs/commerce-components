@@ -8360,12 +8360,12 @@ function ccFormat(value) {
 }
 
 /* harmony default export */ var utils_ccFormat = (ccFormat);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"87271f92-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PaymentForm.vue?vue&type=template&id=781e64fe&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{on:{"submit":function($event){$event.preventDefault();}}},[(_vm.$scopedSlots.default)?[_vm._t("default",null,{"updateData":_vm.updateData,"captureOrder":_vm.captureOrder},_vm.$data)]:[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.customer.firstName),expression:"customer.firstName"}],attrs:{"name":"customerFirstName","placeholder":"First name"},domProps:{"value":(_vm.customer.firstName)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.customer, "firstName", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.customer.lastName),expression:"customer.lastName"}],attrs:{"name":"customerLastName","placeholder":"Last name"},domProps:{"value":(_vm.customer.lastName)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.customer, "lastName", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.customer.email),expression:"customer.email"}],attrs:{"name":"customerEmail","placeholder":"Email"},domProps:{"value":(_vm.customer.email)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.customer, "email", $event.target.value)}}}),(_vm.checkout && _vm.checkout.conditionals && _vm.checkout.conditionals.collects_shipping_address)?[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.shipping.name),expression:"shipping.name"}],attrs:{"name":"shippingName","placeholder":"Shipping name"},domProps:{"value":(_vm.shipping.name)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.shipping, "name", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.shipping.street),expression:"shipping.street"}],attrs:{"name":"shippingStreet","placeholder":"Street address"},domProps:{"value":(_vm.shipping.street)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.shipping, "street", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.shipping.street2),expression:"shipping.street2"}],attrs:{"name":"shippingStreet2","placeholder":"Street Address 2 (optional)"},domProps:{"value":(_vm.shipping.street2)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.shipping, "street2", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.shipping.townCity),expression:"shipping.townCity"}],attrs:{"name":"shippingTownCity","placeholder":"City"},domProps:{"value":(_vm.shipping.townCity)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.shipping, "townCity", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.shipping.postalZipCode),expression:"shipping.postalZipCode"}],attrs:{"name":"shippingPostalZipCode","placeholder":"Shipping zip code"},domProps:{"value":(_vm.shipping.postalZipCode)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.shipping, "postalZipCode", $event.target.value)}}}),_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.shipping.country),expression:"shipping.country"}],class:[ _vm.countrySelectClass ? _vm.countrySelectClass : 'payment-form__delivery-country-select'],attrs:{"name":"shippingCountry"},on:{"change":function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.$set(_vm.shipping, "country", $event.target.multiple ? $$selectedVal : $$selectedVal[0])}}},[_c('option',{attrs:{"value":"","disabled":""}},[_vm._v("Select your shipping country")]),_vm._l((_vm.countries),function(countryValue,countryKey){return _c('option',{key:countryKey,domProps:{"value":countryKey}},[_vm._v(" "+_vm._s(countryValue)+" ")])})],2),_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.shipping.countyState),expression:"shipping.countyState"}],class:[ _vm.countryRegionClass ? _vm.countryRegionClass : 'payment-form__delivery-country-select'],attrs:{"name":"shippingCountyState"},on:{"change":function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.$set(_vm.shipping, "countyState", $event.target.multiple ? $$selectedVal : $$selectedVal[0])}}},[_c('option',{attrs:{"value":"","disabled":""}},[_vm._v("Select your states, provinces, or region")]),_vm._l((_vm.subdivisions),function(subdivisionValue,subdivisionKey){return _c('option',{key:subdivisionKey,domProps:{"value":subdivisionKey}},[_vm._v(" "+_vm._s(_vm.subdivisions[subdivisionKey])+" ")])})],2)]:_vm._e(),(_vm.checkout && _vm.checkout.conditionals && _vm.checkout.conditionals.collects_billing_address)?[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.billing.name),expression:"billing.name"}],attrs:{"name":"billingName","placeholder":"Billing name"},domProps:{"value":(_vm.billing.name)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.billing, "name", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.billing.street),expression:"billing.street"}],attrs:{"name":"billingStreet","placeholder":"Billing street address"},domProps:{"value":(_vm.billing.street)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.billing, "street", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.billing.street2),expression:"billing.street2"}],attrs:{"name":"billingStreet2","placeholder":"Billing street address 2 (optional)"},domProps:{"value":(_vm.billing.street2)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.billing, "street2", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.billing.townCity),expression:"billing.townCity"}],attrs:{"name":"billingTownCity","placeholder":"Billing city"},domProps:{"value":(_vm.billing.townCity)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.billing, "townCity", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.billing.postalZipCode),expression:"billing.postalZipCode"}],attrs:{"name":"billingPostalZipCode","placeholder":"Billing zip code"},domProps:{"value":(_vm.billing.postalZipCode)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.billing, "postalZipCode", $event.target.value)}}}),_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.billing.country),expression:"billing.country"}],attrs:{"name":"billingCountry"},on:{"change":function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.$set(_vm.billing, "country", $event.target.multiple ? $$selectedVal : $$selectedVal[0])}}},[_c('option',{attrs:{"value":"","disabled":""}},[_vm._v("Select your billing country")]),_vm._l((_vm.countries),function(countryValue,countryKey){return _c('option',{key:countryKey,domProps:{"value":countryKey}},[_vm._v(" "+_vm._s(countryValue)+" ")])})],2),_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.billing.countyState),expression:"billing.countyState"}],attrs:{"name":"billingCountyState"},on:{"change":function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.$set(_vm.billing, "countyState", $event.target.multiple ? $$selectedVal : $$selectedVal[0])}}},[_c('option',{attrs:{"value":"","disabled":""}},[_vm._v("Select your states, provinces, or region")]),_vm._l((_vm.billingSubdivisions),function(subdivisionValue,subdivisionKey){return _c('option',{key:subdivisionKey,domProps:{"value":subdivisionKey}},[_vm._v(" "+_vm._s(_vm.billingSubdivisions[subdivisionKey])+" ")])})],2)]:_vm._e(),(_vm.checkout && _vm.checkout.conditionals && _vm.checkout.conditionals.has_physical_delivery)?_c('select',{directives:[{name:"model",rawName:"v-model",value:(_vm.selectedShippingMethod),expression:"selectedShippingMethod"}],attrs:{"name":"shippingMethod"},on:{"change":function($event){var $$selectedVal = Array.prototype.filter.call($event.target.options,function(o){return o.selected}).map(function(o){var val = "_value" in o ? o._value : o.value;return val}); _vm.selectedShippingMethod=$event.target.multiple ? $$selectedVal : $$selectedVal[0]}}},[_c('option',{attrs:{"value":"","disabled":""}},[_vm._v("Select a shipping method")]),_vm._l((_vm.shippingOptions),function(option){return _c('option',{key:option.id,domProps:{"value":option.id}},[_vm._v(" "+_vm._s(((option.description || '') + " $" + (option.price.formatted_with_code)))+" ")])})],2):_vm._e(),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.card.number),expression:"card.number"}],attrs:{"type":"number","name":"cardNumber","placeholder":"Card number"},domProps:{"value":(_vm.card.number)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.card, "number", $event.target.value)}}}),_c('div',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.card.expMonth),expression:"card.expMonth"}],attrs:{"type":"number","name":"expMonth","placeholder":"expiry month"},domProps:{"value":(_vm.card.expMonth)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.card, "expMonth", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.card.expYear),expression:"card.expYear"}],attrs:{"type":"number","name":"expYear","placeholder":"expiry year (yyyy)"},domProps:{"value":(_vm.card.expYear)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.card, "expYear", $event.target.value)}}})]),_c('div',[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.card.cvc),expression:"card.cvc"}],attrs:{"type":"number","name":"cardCvc","placeholder":"Card cvc"},domProps:{"value":(_vm.card.cvc)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.card, "cvc", $event.target.value)}}}),_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.card.billingPostalZipcode),expression:"card.billingPostalZipcode"}],attrs:{"type":"number","name":"cardBillingPostalZipCode","placeholder":"Card billing zip code"},domProps:{"value":(_vm.card.billingPostalZipcode)},on:{"input":function($event){if($event.target.composing){ return; }_vm.$set(_vm.card, "billingPostalZipcode", $event.target.value)}}})]),_c('button',{attrs:{"disabled":_vm.$_isEmpty(_vm.checkout)},on:{"click":function($event){$event.preventDefault();return _vm.defaultModeCaptureOrder($event)}}},[_vm._v(" Checkout ")])]],2)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"87271f92-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PaymentForm.vue?vue&type=template&id=367bd6fd&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{on:{"submit":function($event){$event.preventDefault();}}},[(_vm.$scopedSlots.default)?[_vm._t("default",null,{"shippingOptionsById":_vm.shippingOptionsById,"captureOrder":_vm.captureOrder},_vm.$data)]:_vm._e()],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/PaymentForm.vue?vue&type=template&id=781e64fe&
+// CONCATENATED MODULE: ./src/components/PaymentForm.vue?vue&type=template&id=367bd6fd&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.includes.js
 var es_array_includes = __webpack_require__("caad");
@@ -8494,215 +8494,35 @@ var lodash_isempty_default = /*#__PURE__*/__webpack_require__.n(lodash_isempty);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
  // import { loadStripe } from '@stripe/stripe-js';
 
-var IS_DEV_MODE = "production" === 'development';
 /* harmony default export */ var PaymentFormvue_type_script_lang_js_ = ({
   name: 'PaymentForm',
   data: function data() {
     return {
-      customer: {
-        firstName: '',
-        lastName: '',
-        email: ''
-      },
-      shipping: {
-        name: '',
-        street: '',
-        street2: '',
-        townCity: '',
-        countyState: '',
-        country: 'US',
-        postalZipCode: ''
-      },
-      billing: {
-        name: '',
-        street: '',
-        street2: '',
-        townCity: '',
-        countyState: '',
-        country: 'US',
-        postalZipCode: ''
-      },
-      selectedShippingMethod: '',
-      card: {
-        number: '',
-        // if dev. mode, set dev friendly defaults
-        expMonth: '',
-        expYear: '',
-        cvc: '',
-        billingPostalZipcode: ''
-      },
       countries: {},
       subdivisions: {},
       billingSubdivisions: {},
-      shippingOptions: [],
-      selectedGateway: IS_DEV_MODE ? 'test_gateway' : '' // if dev. mode, set dev friendly defaults
-
+      shippingOptions: []
     };
   },
   props: {
+    useTestGateway: {
+      type: Boolean,
+      default: false
+    },
+
+    /**
+     * synced form data (.sync) looks like this.$formDataSchema
+     * // TODO: validate, if not Object this currently breaks initialization of payment-form
+     */
+    context: {
+      type: Object,
+      default: function _default() {
+        return {};
+      }
+    },
+
     /**
      *  synced checkout (.sync)
      */
@@ -8759,12 +8579,52 @@ var IS_DEV_MODE = "production" === 'development';
       }
     }
   },
+  beforeCreate: function beforeCreate() {
+    this.$formDataSchema = {
+      customer: {
+        firstName: '',
+        lastName: '',
+        email: ''
+      },
+      shipping: {
+        name: '',
+        street: '',
+        street2: '',
+        townCity: '',
+        countyState: '',
+        country: 'US',
+        postalZipCode: ''
+      },
+      billing: {
+        name: '',
+        street: '',
+        street2: '',
+        townCity: '',
+        countyState: '',
+        country: 'US',
+        postalZipCode: ''
+      },
+      selectedShippingMethod: '',
+      card: {
+        number: '',
+        // if dev. mode, set dev friendly defaults
+        expMonth: '',
+        expYear: '',
+        cvc: '',
+        billingPostalZipcode: ''
+      },
+      selectedGateway: '' // if dev. mode, set dev friendly defaults
+
+    };
+  },
   created: function created() {
     var _this = this;
 
     if (!this.$commerce) {
       throw Error('Could not detect Commerce.js within <PaymentForm>');
     }
+
+    this.emitUpdateFormData(_objectSpread2(_objectSpread2({}, this.$formDataSchema), this.context)); // handles for remounting after already scaffolded and sync. form-data prop
 
     this.$_isEmpty = lodash_isempty_default.a;
     this.getAllCountries(); // utilize emitted Commerce.js Cart Events
@@ -8796,6 +8656,24 @@ var IS_DEV_MODE = "production" === 'development';
       });
     });
   },
+  computed: {
+    shippingOptionsById: function shippingOptionsById() {
+      return this.shippingOptions.reduce(function (obj, option) {
+        // eslint-disable-next-line no-param-reassign
+        obj[option.id] = option;
+        return obj;
+      }, {});
+    },
+    contextShippingCountry: function contextShippingCountry() {
+      return this.context.shipping ? this.context.shipping.country || '' : '';
+    },
+    contextShippingCountyState: function contextShippingCountyState() {
+      return this.context.shipping ? this.context.shipping.countyState || '' : '';
+    },
+    contextBillingCountry: function contextBillingCountry() {
+      return this.context.billing ? this.context.billing.country || '' : '';
+    }
+  },
   watch: {
     identifierId: {
       handler: function handler(val, oldVal) {
@@ -8808,17 +8686,27 @@ var IS_DEV_MODE = "production" === 'development';
           // was empty/undefined
           this.generateCheckoutToken().then(function (checkout) {
             return _this2.emitUpdateCheckout(checkout);
+          }).catch(function (e) {
+            return e;
           });
         }
       },
       immediate: true
     },
-    'shipping.country': {
+    contextShippingCountry: {
       handler: function handler(val, oldVal) {
         var _this3 = this;
 
         if (oldVal !== val) {
-          this.shipping.countyState = '';
+          // eslint-disable-next-line no-unused-vars
+          var testing = this.$formDataSchema;
+          this.emitUpdateFormData(_objectSpread2(_objectSpread2({}, this.context), {}, {
+            // TODO: find fix, if null at any point will break
+            shipping: _objectSpread2(_objectSpread2({}, this.context.shipping || this.$formDataSchema.shipping), {}, {
+              // prevent undefined spread
+              countyState: ''
+            })
+          }));
 
           if (!lodash_isempty_default()(this.checkout)) {
             this.generateCheckoutToken().then(function (checkout) {
@@ -8832,7 +8720,7 @@ var IS_DEV_MODE = "production" === 'development';
       },
       immediate: true
     },
-    'shipping.countyState': function handler(val, oldVal) {
+    contextShippingCountyState: function contextShippingCountyState(val, oldVal) {
       var _this4 = this;
 
       if (oldVal !== val) {
@@ -8843,10 +8731,15 @@ var IS_DEV_MODE = "production" === 'development';
         }
       }
     },
-    'billing.country': {
+    contextBillingCountry: {
       handler: function handler(val, oldVal) {
         if (oldVal !== val) {
-          this.billing.countyState = '';
+          this.emitUpdateFormData(_objectSpread2(_objectSpread2({}, this.context), {}, {
+            billing: _objectSpread2(_objectSpread2({}, this.context.billing || this.$formDataSchema.billing), {}, {
+              // prevent undefined spread
+              countyState: ''
+            })
+          }));
         } // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
 
 
@@ -8854,9 +8747,9 @@ var IS_DEV_MODE = "production" === 'development';
       },
       immediate: true
     },
-    selectedShippingMethod: function selectedShippingMethod(val, oldVal) {
+    selectedShippingMethod: function handler(val, oldVal) {
       if (oldVal !== val) {
-        this.validateAndSetShippingOptionInCheckout(this.checkout.id, this.selectedShippingMethod, this.shipping.country, this.shipping.region).catch(this.generateCheckoutToken);
+        this.validateAndSetShippingOptionInCheckout(this.checkout.id, this.context.selectedShippingMethod, this.context.shipping ? this.context.shipping.country : '', this.context.shipping ? this.context.shipping.countyState : '').catch(this.generateCheckoutToken);
       }
     }
   },
@@ -8893,26 +8786,37 @@ var IS_DEV_MODE = "production" === 'development';
       }, {}); // TODO: add support for extrafields
       // construct order object
 
+      var _this$context = this.context,
+          _this$context$custome = _this$context.customer,
+          customer = _this$context$custome === void 0 ? this.$formDataSchema.customer : _this$context$custome,
+          _this$context$shippin = _this$context.shipping,
+          shipping = _this$context$shippin === void 0 ? this.$formDataSchema.shipping : _this$context$shippin,
+          _this$context$card = _this$context.card,
+          card = _this$context$card === void 0 ? this.$formDataSchema.card : _this$context$card,
+          _this$context$selecte = _this$context.selectedShippingMethod,
+          selectedShippingMethod = _this$context$selecte === void 0 ? '' : _this$context$selecte,
+          _this$context$selecte2 = _this$context.selectedGateway,
+          selectedGateway = _this$context$selecte2 === void 0 ? this.$formDataSchema.selectedGateway : _this$context$selecte2;
       var order = {
         line_items: lineItems,
         customer: {
-          firstname: this.customer.firstName,
-          lastname: this.customer.lastName,
-          email: this.customer.email
+          firstname: customer.firstName,
+          lastname: customer.lastName,
+          email: customer.email
         },
         shipping: {
-          name: this.shipping.name,
-          country: this.shipping.country,
-          street: this.shipping.street + this.shipping.street2,
-          town_city: this.shipping.townCity,
-          county_state: this.shipping.countyState,
-          postal_zip_code: this.shipping.postalZipCode
+          name: shipping.name,
+          country: shipping.country,
+          street: shipping.street + shipping.street2,
+          town_city: shipping.townCity,
+          county_state: shipping.countyState,
+          postal_zip_code: shipping.postalZipCode
         },
         fulfillment: {
-          shipping_method: this.selectedShippingMethod
+          shipping_method: selectedShippingMethod
         },
         payment: {
-          gateway: this.selectedGateway
+          gateway: this.useTestGateway ? 'test_gateway' : selectedGateway
         }
       }; // TODO: for mvp only support test_gateay, ideally stripe(token), razor(payment_id), square (nonce), paypal
       // if test gateway selected add necessary card data
@@ -8920,11 +8824,11 @@ var IS_DEV_MODE = "production" === 'development';
 
       if (this.selectedGateway === 'test_gateway') {
         order.payment.card = {
-          number: this.card.number,
-          expiry_month: this.card.expMonth,
-          expiry_year: this.card.expYear,
-          cvc: this.card.cvc,
-          postal_zip_code: this.card.billingPostalZipcode
+          number: card.number,
+          expiry_month: card.expMonth,
+          expiry_year: card.expYear,
+          cvc: card.cvc,
+          postal_zip_code: card.billingPostalZipcode
         };
       }
 
@@ -8968,18 +8872,23 @@ var IS_DEV_MODE = "production" === 'development';
     generateCheckoutToken: function generateCheckoutToken() {
       var _this6 = this;
 
-      this.selectedShippingMethod = '';
+      this.emitUpdateFormData(_objectSpread2(_objectSpread2({}, this.context), {}, {
+        selectedShippingMethod: ''
+      }));
       return this.$commerce.checkout.generateToken(this.identifierId, {
         type: this.identifierType
       }).then(function (checkout) {
         // reset currently selected shipping method as it may not be accurate now that shipping options
         // will be fetched below based of new generated checkout.id
-        _this6.getShippingOptionsForCheckout(checkout.id, _this6.shipping.country, _this6.shipping.countyState);
+        _this6.getShippingOptionsForCheckout(checkout.id, _this6.context.shipping ? _this6.context.shipping.country : '', _this6.context.shipping ? _this6.context.shipping.countyState : '');
 
         return checkout;
       }).catch(function (error) {
         // eslint-disable-next-line no-console
-        _this6.selectedShippingMethod = '';
+        _this6.emitUpdateFormData(_objectSpread2(_objectSpread2({}, _this6.context), {}, {
+          selectedShippingMethod: ''
+        }));
+
         _this6.shippingOptions = [];
 
         _this6.emitUpdateCheckout({});
@@ -8987,6 +8896,13 @@ var IS_DEV_MODE = "production" === 'development';
         console.log('ERROR: GENERATING CHECKOUT TOKEN', error);
         throw error;
       });
+    },
+
+    /**
+     * emit update:data event, for .sync modifier to work
+     */
+    emitUpdateFormData: function emitUpdateFormData(data) {
+      this.$emit('update:context', data);
     },
 
     /**

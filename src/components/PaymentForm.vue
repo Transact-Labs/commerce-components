@@ -15,172 +15,11 @@
           - add labels in default mode post-mvp/mwe
       -->
     <template v-if="$scopedSlots.default"> <!-- really should be $slot.default-->
-      <slot v-bind="$data" :updateData="updateData" :captureOrder="captureOrder" />
-    </template>
-    <template v-else>
-      <!-- customer information -->
-      <input name="customerFirstName" placeholder="First name" v-model="customer.firstName"/>
-      <input name="customerLastName" placeholder="Last name" v-model="customer.lastName" />
-      <input name="customerEmail" placeholder="Email" v-model="customer.email" />
-
-      <!-- shippping information -->
-      <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_shipping_address">
-        <input
-          name="shippingName"
-          placeholder="Shipping name"
-          v-model="shipping.name"
-        />
-        <input
-          name="shippingStreet"
-          placeholder="Street address"
-          v-model="shipping.street"
-        />
-        <input
-          name="shippingStreet2"
-          placeholder="Street Address 2 (optional)"
-          v-model="shipping.street2"
-        />
-        <input
-          name="shippingTownCity"
-          placeholder="City"
-          v-model="shipping.townCity"
-        />
-        <input
-          name="shippingPostalZipCode"
-          placeholder="Shipping zip code"
-          v-model="shipping.postalZipCode"
-        />
-        <!-- todo : create select base-list component -->
-        <select
-          :class="[ countrySelectClass ? countrySelectClass : 'payment-form__delivery-country-select']"
-          name="shippingCountry"
-          v-model="shipping.country">
-          <option value="" disabled>Select your shipping country</option>
-          <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
-            {{ countryValue }}
-          </option>
-        </select>
-
-        <select
-          name="shippingCountyState"
-          :class="[ countryRegionClass ? countryRegionClass : 'payment-form__delivery-country-select']"
-          v-model="shipping.countyState">
-          <option value="" disabled>Select your states, provinces, or region</option>
-          <option
-            v-for="(subdivisionValue, subdivisionKey) in subdivisions"
-            :value="subdivisionKey"
-            :key="subdivisionKey">
-            {{ subdivisions[subdivisionKey] }}
-          </option>
-        </select>
-      </template>
-
-      <!-- billing information -->
-      <!-- for default mode, also consider adding checkbox
-      to toggle reusing shipping address for billing
-      (since shipping is first in layout in default mode) -->
-      <template v-if="checkout && checkout.conditionals && checkout.conditionals.collects_billing_address">
-        <input
-          name="billingName"
-          placeholder="Billing name"
-          v-model="billing.name"
-        />
-        <input
-          name="billingStreet"
-          placeholder="Billing street address"
-          v-model="billing.street"
-        />
-        <input
-          name="billingStreet2"
-          placeholder="Billing street address 2 (optional)"
-          v-model="billing.street2"
-        />
-        <input
-          name="billingTownCity"
-          placeholder="Billing city"
-          v-model="billing.townCity"
-        />
-        <input
-          name="billingPostalZipCode"
-          placeholder="Billing zip code"
-          v-model="billing.postalZipCode"
-        />
-        <!-- todo : create select base-list component -->
-        <select
-          name="billingCountry"
-          v-model="billing.country">
-          <option value="" disabled>Select your billing country</option>
-          <option v-for="(countryValue, countryKey) in countries" :value="countryKey" :key="countryKey">
-            {{ countryValue }}
-          </option>
-        </select>
-        <select
-          name="billingCountyState"
-          v-model="billing.countyState">
-          <option value="" disabled>Select your states, provinces, or region</option>
-          <option
-            v-for="(subdivisionValue, subdivisionKey) in billingSubdivisions"
-            :value="subdivisionKey"
-            :key="subdivisionKey">
-            {{ billingSubdivisions[subdivisionKey] }}
-          </option>
-        </select>
-      </template>
-
-      <!-- shipping method/option -->
-      <select
-        v-if="checkout && checkout.conditionals && checkout.conditionals.has_physical_delivery"
-        name="shippingMethod"
-        v-model="selectedShippingMethod">
-        <option value="" disabled>Select a shipping method</option>
-        <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
-          {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
-        </option>
-      </select>
-
-      <!-- payment info -->
-      <!-- TODO: implement stripe.js and element
-      if gateway stripe available, and configured as the payment -->
-      <input
-        type="number"
-        name="cardNumber"
-        v-model="card.number"
-        placeholder="Card number"
+      <slot
+        v-bind="$data"
+        :shippingOptionsById="shippingOptionsById"
+        :captureOrder="captureOrder"
       />
-      <div>
-        <input
-          type="number"
-          name="expMonth"
-          v-model="card.expMonth"
-          placeholder="expiry month"
-        />
-        <input
-          type="number"
-          name="expYear"
-          v-model="card.expYear"
-          placeholder="expiry year (yyyy)"
-        />
-      </div>
-      <div>
-        <input
-          type="number"
-          name="cardCvc"
-          v-model="card.cvc"
-          placeholder="Card cvc"
-        />
-        <input
-          type="number"
-          name="cardBillingPostalZipCode"
-          v-model="card.billingPostalZipcode"
-          placeholder="Card billing zip code"
-        />
-      </div>
-      <button
-        @click.prevent="defaultModeCaptureOrder"
-        :disabled="$_isEmpty(checkout)"
-      >
-        Checkout
-      </button>
     </template>
   </form>
 </template>
@@ -188,56 +27,29 @@
 import _isEmpty from 'lodash.isempty';
 // import { loadStripe } from '@stripe/stripe-js';
 
-const IS_DEV_MODE = process.env.NODE_ENV === 'development';
 export default {
   name: 'PaymentForm',
   data() {
     return {
-      customer: {
-        firstName: '',
-        lastName: '',
-        email: '',
-      },
-
-      shipping: {
-        name: '',
-        street: '',
-        street2: '',
-        townCity: '',
-        countyState: '',
-        country: 'US',
-        postalZipCode: '',
-      },
-
-      billing: {
-        name: '',
-        street: '',
-        street2: '',
-        townCity: '',
-        countyState: '',
-        country: 'US',
-        postalZipCode: '',
-      },
-
-      selectedShippingMethod: '',
-
-      card: {
-        number: '', // if dev. mode, set dev friendly defaults
-        expMonth: '',
-        expYear: '',
-        cvc: '',
-        billingPostalZipcode: '',
-      },
-
       countries: {},
       subdivisions: {},
       billingSubdivisions: {},
       shippingOptions: [],
-
-      selectedGateway: IS_DEV_MODE ? 'test_gateway' : '', // if dev. mode, set dev friendly defaults
     };
   },
   props: {
+    useTestGateway: {
+      type: Boolean,
+      default: false,
+    },
+    /**
+     * synced form data (.sync) looks like this.$formDataSchema
+     * // TODO: validate, if not Object this currently breaks initialization of payment-form
+     */
+    context: {
+      type: Object,
+      default: () => ({}),
+    },
     /**
      *  synced checkout (.sync)
      */
@@ -285,10 +97,55 @@ export default {
       default: () => ({}),
     },
   },
+  beforeCreate() {
+    this.$formDataSchema = {
+      customer: {
+        firstName: '',
+        lastName: '',
+        email: '',
+      },
+
+      shipping: {
+        name: '',
+        street: '',
+        street2: '',
+        townCity: '',
+        countyState: '',
+        country: 'US',
+        postalZipCode: '',
+      },
+
+      billing: {
+        name: '',
+        street: '',
+        street2: '',
+        townCity: '',
+        countyState: '',
+        country: 'US',
+        postalZipCode: '',
+      },
+
+      selectedShippingMethod: '',
+
+      card: {
+        number: '', // if dev. mode, set dev friendly defaults
+        expMonth: '',
+        expYear: '',
+        cvc: '',
+        billingPostalZipcode: '',
+      },
+
+      selectedGateway: '', // if dev. mode, set dev friendly defaults
+    };
+  },
   created() {
     if (!this.$commerce) {
       throw Error('Could not detect Commerce.js within <PaymentForm>');
     }
+    this.emitUpdateFormData({
+      ...this.$formDataSchema,
+      ...this.context,
+    }); // handles for remounting after already scaffolded and sync. form-data prop
     this.$_isEmpty = _isEmpty;
     this.getAllCountries();
     // utilize emitted Commerce.js Cart Events
@@ -319,6 +176,24 @@ export default {
         .then(checkout => this.emitUpdateCheckout(checkout)),
     );
   },
+  computed: {
+    shippingOptionsById() {
+      return this.shippingOptions.reduce((obj, option) => {
+        // eslint-disable-next-line no-param-reassign
+        obj[option.id] = option;
+        return obj;
+      }, {});
+    },
+    contextShippingCountry() {
+      return this.context.shipping ? this.context.shipping.country || '' : '';
+    },
+    contextShippingCountyState() {
+      return this.context.shipping ? this.context.shipping.countyState || '' : '';
+    },
+    contextBillingCountry() {
+      return this.context.billing ? this.context.billing.country || '' : '';
+    },
+  },
   watch: {
     identifierId: {
       handler(val, oldVal) {
@@ -328,15 +203,24 @@ export default {
         // on the subsequent update to identifierId, where the previous indentifierId
         // was empty/undefined
           this.generateCheckoutToken()
-            .then(checkout => this.emitUpdateCheckout(checkout));
+            .then(checkout => this.emitUpdateCheckout(checkout))
+            .catch(e => e);
         }
       },
       immediate: true,
     },
-    'shipping.country': {
+    contextShippingCountry: {
       handler(val, oldVal) {
         if (oldVal !== val) {
-          this.shipping.countyState = '';
+          // eslint-disable-next-line no-unused-vars
+          const testing = this.$formDataSchema;
+          this.emitUpdateFormData({
+            ...this.context, // TODO: find fix, if null at any point will break
+            shipping: {
+              ...(this.context.shipping || this.$formDataSchema.shipping), // prevent undefined spread
+              countyState: '',
+            },
+          });
           if (!_isEmpty(this.checkout)) {
             this.generateCheckoutToken()
               .then(checkout => this.emitUpdateCheckout(checkout));
@@ -347,7 +231,7 @@ export default {
       },
       immediate: true,
     },
-    'shipping.countyState': function handler(val, oldVal) {
+    contextShippingCountyState(val, oldVal) {
       if (oldVal !== val) {
         if (!_isEmpty(this.checkout)) {
           this.generateCheckoutToken()
@@ -355,23 +239,29 @@ export default {
         }
       }
     },
-    'billing.country': {
+    contextBillingCountry: {
       handler(val, oldVal) {
         if (oldVal !== val) {
-          this.billing.countyState = '';
+          this.emitUpdateFormData({
+            ...this.context,
+            billing: {
+              ...(this.context.billing || this.$formDataSchema.billing), // prevent undefined spread
+              countyState: '',
+            },
+          });
         }
         // update the regions/provinces/states that are based on the selected delivery country (this.deliveryCountry)
         this.getBillingRegions(val);
       },
       immediate: true,
     },
-    selectedShippingMethod(val, oldVal) {
+    selectedShippingMethod: function handler(val, oldVal) {
       if (oldVal !== val) {
         this.validateAndSetShippingOptionInCheckout(
           this.checkout.id,
-          this.selectedShippingMethod,
-          this.shipping.country,
-          this.shipping.region,
+          this.context.selectedShippingMethod,
+          this.context.shipping ? this.context.shipping.country : '',
+          this.context.shipping ? this.context.shipping.countyState : '',
         ).catch(this.generateCheckoutToken);
       }
     },
@@ -405,26 +295,33 @@ export default {
       }, {});
       // TODO: add support for extrafields
       // construct order object
+      const {
+        customer = this.$formDataSchema.customer,
+        shipping = this.$formDataSchema.shipping,
+        card = this.$formDataSchema.card,
+        selectedShippingMethod = '',
+        selectedGateway = this.$formDataSchema.selectedGateway,
+      } = this.context;
       const order = {
         line_items: lineItems,
         customer: {
-          firstname: this.customer.firstName,
-          lastname: this.customer.lastName,
-          email: this.customer.email,
+          firstname: customer.firstName,
+          lastname: customer.lastName,
+          email: customer.email,
         },
         shipping: {
-          name: this.shipping.name,
-          country: this.shipping.country,
-          street: this.shipping.street + this.shipping.street2,
-          town_city: this.shipping.townCity,
-          county_state: this.shipping.countyState,
-          postal_zip_code: this.shipping.postalZipCode,
+          name: shipping.name,
+          country: shipping.country,
+          street: shipping.street + shipping.street2,
+          town_city: shipping.townCity,
+          county_state: shipping.countyState,
+          postal_zip_code: shipping.postalZipCode,
         },
         fulfillment: {
-          shipping_method: this.selectedShippingMethod,
+          shipping_method: selectedShippingMethod,
         },
         payment: {
-          gateway: this.selectedGateway,
+          gateway: this.useTestGateway ? 'test_gateway' : selectedGateway,
         },
       };
 
@@ -433,11 +330,11 @@ export default {
       // for the order to be completed.
       if (this.selectedGateway === 'test_gateway') {
         order.payment.card = {
-          number: this.card.number,
-          expiry_month: this.card.expMonth,
-          expiry_year: this.card.expYear,
-          cvc: this.card.cvc,
-          postal_zip_code: this.card.billingPostalZipcode,
+          number: card.number,
+          expiry_month: card.expMonth,
+          expiry_year: card.expYear,
+          cvc: card.cvc,
+          postal_zip_code: card.billingPostalZipcode,
         };
       }
       return this.$commerce.checkout.capture(this.checkout.id, order)
@@ -474,22 +371,38 @@ export default {
      * generate checkout token
      */
     generateCheckoutToken() {
-      this.selectedShippingMethod = '';
+      this.emitUpdateFormData({
+        ...this.context,
+        selectedShippingMethod: '',
+      });
       return this.$commerce.checkout.generateToken(this.identifierId, { type: this.identifierType })
         .then(checkout => {
           // reset currently selected shipping method as it may not be accurate now that shipping options
           // will be fetched below based of new generated checkout.id
-          this.getShippingOptionsForCheckout(checkout.id, this.shipping.country, this.shipping.countyState);
+          this.getShippingOptionsForCheckout(
+            checkout.id,
+            this.context.shipping ? this.context.shipping.country : '',
+            this.context.shipping ? this.context.shipping.countyState : '',
+          );
           return checkout;
         })
         .catch(error => {
           // eslint-disable-next-line no-console
-          this.selectedShippingMethod = '';
+          this.emitUpdateFormData({
+            ...this.context,
+            selectedShippingMethod: '',
+          });
           this.shippingOptions = [];
           this.emitUpdateCheckout({});
           console.log('ERROR: GENERATING CHECKOUT TOKEN', error);
           throw error;
         });
+    },
+    /**
+     * emit update:data event, for .sync modifier to work
+     */
+    emitUpdateFormData(data) {
+      this.$emit('update:context', data);
     },
     /**
      * emit update:checkout event, for .sync modifier to work

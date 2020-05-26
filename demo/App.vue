@@ -16,10 +16,12 @@
       <ChecPaymentForm
         :identifierId="cart.id"
         :checkout.sync="checkoutTokenObject"
-
+        :context.sync="formData"
+        :isDevMode="true"
         @order:error="handleCaptureOrderErrors"
-
+        v-slot="{ countries, subdivisions, shippingOptions, shippingOptionsById, captureOrder }"
       >
+        <input type="text" v-model="formData.customer.firstName" />
         <!-- <select
           name="shippingMethod"
           :value="selectedShippingMethod"
@@ -28,11 +30,11 @@
           <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
             {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
           </option>
-        </select>
+        </select>-->
 
         <button @click="customCaptureOrder(captureOrder)">
           make a payment
-        </button> -->
+        </button>
       </ChecPaymentForm>
       <br />
       <!-- <p>
@@ -62,7 +64,9 @@ export default {
     });
   },
   data: () => ({
+    toggleTest: false,
     cart: {},
+    formData: {},
     products: [],
     checkoutTokenObject: {},
     errors: {},
