@@ -34,7 +34,7 @@ npm install path-to/commerce-components
         render: h => h(App),
     }).$mount('#app');
     ```
-2. Implement the `<chec-payment-form>` component synchronizing the `<App>` checkout, component's state 
+2. Implement the `<chec-payment-form>` component synchronizing the `<App>`'s checkout & formData state
     ```html
         <template>
             <chec-payment-form
