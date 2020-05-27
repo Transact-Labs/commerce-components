@@ -1,6 +1,14 @@
+// utils
+import ccFormat from '@/utils/ccFormat';
+// components
+import PaymentForm from '@/components/PaymentForm.vue';
+// plugin install method
 import install from './install';
-// import Component from './components/Component.vue';
 
 export default {
+  utils: {
+    ccFormat,
+  },
+  PaymentForm,
   install,
 };

@@ -1,122 +1,172 @@
-# Vue.js component UI library using Tailwindcss by Chec
+# Vue.js Commerce.js helper library with `<payment-form>` component for checkout flow (BETA v0.1.0)
 
-[View the Storybook app](https://chec-ui.netlify.app/)
-## Installation & Usage
+## Installing package
 
-You can use either `yarn` or `npm` to install the `ui-library` and it's dependencies from this Github repo.
+You can use either `yarn` or `npm` to install the `commerce-components` package and it's dependencies from this Github repo.
+
+Clone this repo then ...
 
 ### with yarn
 ```sh
-yarn add github:chec/ui-library
+yarn add path-to/commerce-components
 ```
 
 ### with npm
 ```sh
-npm install github:chec/ui-library
+npm install path-to/commerce-components
 ```
 
-### Setting up Tailwindcss 
+### Easily build a checkout form 
 
-1. Create a [`tailwind.config.js`](https://tailwindcss.com/docs/configuration/#app) file at the root of the app exporting the `ui-library`'s custom `tailwind.config.js` from it.
+1. Import then install `VueCommerceJs` using `Vue.use()` passing your public `Chec` API key.
 
-
+    This will 
+    - globally register the `<payment-form>` component.
+    - instantiate a Commerce.js client assigning it as a global variable `this.$commerce`. (e.g. `this.$commerce.cart.retrieve().then(cart => console.log(cart));` from anywhere)
     ```js
-    // Example `tailwind.config.js` file
+    import VueCommerceJs from '@chec/commerce-components';
 
-    module.exports = require('@chec/ui-library/tailwind.config');
+    Vue.use(VueCommercejs, { 
+      commercejsPublicKey: process.env.VUE_APP_COMMERCEJS_PUBLIC_KEY 
+    });
+
+    new Vue({
+        render: h => h(App),
+    }).$mount('#app');
     ```
-2. Inject the `ui-library`'s compiled css and Tailwind.css file—which includes the @tailwind directives to include the `ui-library` configured Tailwindcss styles/utilities. 
-    ```css
-    /* example tailwind.css */
-
-    /*
-    ui-library.css compiled css
-    */
-    @import '~@chec/ui-library/dist/ui-library.css';
-
-    /*
-    tailwind.css, uses the @tailwind directive to inject Tailwind's base, components, and utilities styles into your CSS: 
-    */  
-    @import '~@chec/ui-library/src/assets/tailwind.css';
-    ```
-
-### Utilizing Sass mixins
-
-You can import helpful sass mixins such as `aspect-ratio`.
-
-```scss
-/* mixins.scss */
-
-@import '~@chec/ui-library/src/assets/mixins.scss';
-```
-
-Mixins
-- aspect-ratio
-
-    use-case:
+2. Implement the `<chec-payment-form>` component synchronizing the `<App>` checkout, component's state 
     ```html
-    <div class="image-container">
+        <template>
+            <chec-payment-form
+                useTestGateway // forces use of test_gatway when slotProp.captureOrder is called
 
-      <img src="chec.io/image.jpg" />
+                :identifierId="cartId"
+                indentifierType="cart" // cart by default
 
-      <div v-else>
-        <h6>
-          No Image
-        </h6>
-      </div>
+                // handles sync. checkout object, and expects checkout value to empty object {}, 
+                // it will populate it automatically on mount
+                :checkout.sync="checkout"
+        
+                // handles populating formData object with properties (customer, card, shipping) for form input(s) to bind to with v-model
+                // and resets values like formData.selectedShippingMethod on checkout token object change
+                :context.sync="formData"
+                
+                v-slot="{ captureOrder, countries, subregions, shippingOptions, shippingOptionsById }"
+            >
+                <!-- ^^ the slot props are important for powering dynamic parts of the form, it provides the countries, subregions, and shippingOptions list,
+                a computed shippingOptionsById object, 
+                and a captureOrder callback method to invoke on submit-->
 
-    </div>
+                <input type="text" v-model="formData.customer.firstName" />
+                
+                <input type="number" v-model="formData.card.number" />
+
+                <!-- invoke captureOrder callback within method to handle promise, resolving with response from capture-order request -->
+                <button @click="() => handleCallCaptureOrderCallBack(captureOrder)">
+            </chec-payment-form> 
+        </template>
     ```
-    
-    ```scss
-    .image-container {
+    ```js
+    // in App.vue (example)
+    // to keep it simple let's quickly in `created()` hook in any abritrary component retrieve a cart, setting it on state
+    export default {
+    name: 'app',
+    created() {
+        // retrieve cart, then list of products, and then add first product to cart
+        this.$commerce.cart.retrieve().then(cart => {
+            this.cartId = cart.id;
+            this.$commerce.products.list().then(({ products }) => {
+                this.$commerce.cart.add(products[0].id);
+            });
+        })
+    },
+    data: () => ({
+        // when <payment-form> is mounted and created this formData will be transformed into the proper formData schema with properties 
+        /* customer: {
+            firstName: '',
+            lastName: '',
+            email: '',
+        },
 
-      /* tailwind @apply directive */
-      @apply w-1/2 max-w-sm; 
+        shipping: {
+            name: '',
+            street: '',
+            street2: '',
+            townCity: '',
+            countyState: '',
+            country: 'US',
+            postalZipCode: '',
+        },
 
-      /* apply aspect-ratio mixin */
-      @include aspect-ratio(16, 9); 
+        billing: {
+            name: '',
+            street: '',
+            street2: '',
+            townCity: '',
+            countyState: '',
+            country: 'US',
+            postalZipCode: '',
+        },
 
-      /* style fall-back element */
-      div {
-        @apply bg-gray-300;
-      }
-    }
+        selectedShippingMethod: '',
+        selectedGateway: ''
+
+        card: {
+            number: '', // if dev. mode, set dev friendly defaults
+            expMonth: '',
+            expYear: '',
+            cvc: '',
+            billingPostalZipcode: '',
+        },
+        */
+       // (Note, must be passed to form as <payment-form :checkout.sync="checkoutTokenObject"/>)
+        formData: {}, 
+        
+        // checkout token object, populated when <payment-form> mounts and generates token, will be updated, and continuesly sync. with payment-form (Note, must be passed to form as <payment-form :checkout.sync="checkoutTokenObject"/>)
+        checkout: {},
+
+        cartId: '',
+    }),
+    methods: {
+        /**
+        * custom captureOrder method
+        */
+        handleCallCaptureOrderCallBack(captureOrderCallBack) {
+            captureOrderCallBack()
+                .then(resp => {
+                    // can also handle successful resp by listening to, order:success, event on <payment-form>
+                    // https://commercejs.com/docs/api/?javascript--cjs#capture-order
+                    console.log('💸💸 YAY ORDER SUCCESSFUL!', resp);
+                })
+                .catch((error => {
+                    // handle error from #capture-order request
+                    // can also handle error by listening to, order:error, event on <payment-form>
+                });
+        },
+    },
+    };
     ```
 
-## Project setup
+## Spin up the demo
 
+### Git clone this repo then `cd` into the directory 
 ```
-git clone https://github.com/chec/ui-library.git
-```
-
-```
-cd ui-library
+cd commerce-components
 ```
 
+### Install all the dependencies
 ```
 yarn install
 ```
 
-### Start Storybook app on port 6006:
+### Compile and minify a build of package then serves demo on localhost:7777
 ```
-yarn storybook:serve
-```
-
-### Run the frontend app proper on port 8080:
-```
-yarn run serve
+yarn build-lib && yarn demo:serve
 ```
 
-### Compiles and minifies for production (This is done continously)
+### Play with the demo on http://localhost:7777/,
+besure to create an `.env` while with your Chec public `API` key for the demo app to fully work.
 ```
-yarn build-lib
-```
-
-### Lints and fixes files
-```
-yarn lint:Fix
+    VUE_APP_COMMERCEJS_PUBLIC_KEY=/* https://chec.io public API key */
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
