@@ -121,8 +121,8 @@ npm install path-to/commerce-components
             billingPostalZipcode: '',
         },
         */
-       // (Note, must be passed to form as <chec-payment-form :checkout.sync="checkoutTokenObject"/>)
-        formData: {}, 
+       // (Note, must be passed to form as <chec-payment-form :context.sync="formData"/>)
+        formData: {}, // 'formData' is an arbitrary property name, it can be any name so long it gets passed as the context.sync prop to <chec-payment-form> for it to be set-up if using slot.captureOrder
         
         // checkout token object, populated when <chec-payment-form> mounts and generates token, will be updated, and continuesly sync. with chec-payment-form (Note, must be passed to form as <chec-payment-form :checkout.sync="checkoutTokenObject"/>)
         checkout: {},
