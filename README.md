@@ -69,7 +69,7 @@ npm install path-to/commerce-components
     ```
     ```js
     // in App.vue (example)
-    // to keep it simple let's quickly in `created()` hook in any abritrary component retrieve a cart, setting it on state
+    // in this example, in the created() hook we're retrieving a cart and setting the cart.id in the state, all of our  products and adding one to the cart, so that the chec-payment-form can have an successfully purchase an item
     export default {
     name: 'app',
     created() {
