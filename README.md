@@ -61,7 +61,7 @@ npm install path-to/commerce-components
                 
                 <input type="number" v-model="formData.card.number" />
 
-                <!-- invoke captureOrder callback within method to handle promise, resolving with response from capture-order request -->
+                <!-- invoke captureOrder slot-prop callback within method to handle promise, resolving with response from capture-order request -->
                 <button @click="() => handleCallCaptureOrderCallBack(captureOrder)">
             </chec-payment-form> 
         </template>
@@ -82,7 +82,8 @@ npm install path-to/commerce-components
     },
     data: () => ({
         // when <payment-form> is mounted and created this formData will be transformed into the proper formData schema with properties 
-        /* customer: {
+        /* 
+        customer: {
             firstName: '',
             lastName: '',
             email: '',
@@ -146,7 +147,6 @@ npm install path-to/commerce-components
     },
     };
     ```
-
 ## Spin up the demo
 
 ### Git clone this repo then `cd` into the directory 
