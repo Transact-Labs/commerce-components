@@ -9,7 +9,7 @@
         updateData expecting a dot-delimited property name, and value
         to update property with. for example this.$data.shipping.name/slotProps.shipping.name can be updated by
         slotProps.updateDate('shipping.name', 'john doe');
-        - default mode where inputs are rendered as such by this component,
+        - TODO: default mode where inputs are rendered as such by this component,
         default classes are rendered, unless given custom class for respective indivial input element.
         useful for quick developing with tailwind classes
           - add labels in default mode post-mvp/mwe
@@ -156,7 +156,7 @@ export default {
     // on cart events that aren't cart.emptied, cart.deleted,
     // and instead utilize $commerce.checkout.getToken to get updated existing token
     window.addEventListener(
-      'Commercejs.Cart.Item.Removed',
+      'Commercejs.Cart.Item.Added',
       () => this.generateCheckoutToken()
         .then(checkout => this.emitUpdateCheckout(checkout)),
     );
@@ -166,12 +166,17 @@ export default {
         .then(checkout => this.emitUpdateCheckout(checkout)),
     );
     window.addEventListener(
-      'Commercejs.Cart.Item.Added',
+      'Commercejs.Cart.Item.Removed',
       () => this.generateCheckoutToken()
         .then(checkout => this.emitUpdateCheckout(checkout)),
     );
     window.addEventListener(
-      'Commercejs.Cart.Item.Removed',
+      'Commercejs.Cart.Deleted',
+      () => this.generateCheckoutToken()
+        .then(checkout => this.emitUpdateCheckout(checkout)),
+    );
+    window.addEventListener(
+      'Commercejs.Cart.Emptied',
       () => this.generateCheckoutToken()
         .then(checkout => this.emitUpdateCheckout(checkout)),
     );

@@ -15,9 +15,9 @@
     <div class="cjs-flex cjs-bg-gray-200 cjs-w-full">
       <ChecPaymentForm
         :identifierId="cart.id"
-        :checkout.sync="checkoutTokenObject"
-        :context.sync="formData"
-        :isDevMode="true"
+        :checkout.sync="$data.checkoutTokenObject"
+        :context.sync="$data.formData"
+        useTestGateway
         @order:error="handleCaptureOrderErrors"
         v-slot="{ countries, subdivisions, shippingOptions, shippingOptionsById, captureOrder }"
       >
@@ -62,13 +62,18 @@ export default {
     this.$commerce.products.list().then(({ data = [] }) => {
       this.products = data;
     });
+
+    debugger;
   },
   data: () => ({
     toggleTest: false,
+
     cart: {},
-    formData: {},
     products: [],
+
+    formData: {},
     checkoutTokenObject: {},
+
     errors: {},
   }),
   methods: {
