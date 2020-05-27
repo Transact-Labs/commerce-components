@@ -1,4 +1,4 @@
-# Vue.js Commerce.js helper library with `<payment-form>` component for checkout flow (BETA v0.1.0)
+# Vue.js Commerce.js helper library with `<chec-payment-form>` component for checkout flow (BETA v0.1.0)
 
 ## Installing package
 
@@ -21,7 +21,7 @@ npm install path-to/commerce-components
 1. Import then install `VueCommerceJs` using `Vue.use()` passing your public `Chec` API key.
 
     This will 
-    - globally register the `<payment-form>` component.
+    - globally register the `<chec-payment-form>` component.
     - instantiate a Commerce.js client assigning it as a global variable `this.$commerce`. (e.g. `this.$commerce.cart.retrieve().then(cart => console.log(cart));` from anywhere)
     ```js
     import VueCommerceJs from '@chec/commerce-components';
@@ -36,6 +36,7 @@ npm install path-to/commerce-components
     ```
 2. Implement the `<chec-payment-form>` component synchronizing the `<App>`'s checkout & formData state
     ```html
+        <!-- ex: App.vue templae -->
         <template>
             <chec-payment-form
                 useTestGateway // forces use of test_gatway when slotProp.captureOrder is called
@@ -81,7 +82,7 @@ npm install path-to/commerce-components
         })
     },
     data: () => ({
-        // when <payment-form> is mounted and created this formData will be transformed into the proper formData schema with properties 
+        // when <chec-payment-form> is mounted and created this formData will be transformed into the proper formData schema with properties 
         /* 
         customer: {
             firstName: '',
@@ -120,10 +121,10 @@ npm install path-to/commerce-components
             billingPostalZipcode: '',
         },
         */
-       // (Note, must be passed to form as <payment-form :checkout.sync="checkoutTokenObject"/>)
+       // (Note, must be passed to form as <chec-payment-form :checkout.sync="checkoutTokenObject"/>)
         formData: {}, 
         
-        // checkout token object, populated when <payment-form> mounts and generates token, will be updated, and continuesly sync. with payment-form (Note, must be passed to form as <payment-form :checkout.sync="checkoutTokenObject"/>)
+        // checkout token object, populated when <chec-payment-form> mounts and generates token, will be updated, and continuesly sync. with chec-payment-form (Note, must be passed to form as <chec-payment-form :checkout.sync="checkoutTokenObject"/>)
         checkout: {},
 
         cartId: '',
@@ -135,13 +136,13 @@ npm install path-to/commerce-components
         handleCallCaptureOrderCallBack(captureOrderCallBack) {
             captureOrderCallBack()
                 .then(resp => {
-                    // can also handle successful resp by listening to, order:success, event on <payment-form>
+                    // can also handle successful resp by listening to, order:success, event on <chec-payment-form>
                     // https://commercejs.com/docs/api/?javascript--cjs#capture-order
                     console.log('💸💸 YAY ORDER SUCCESSFUL!', resp);
                 })
                 .catch((error => {
                     // handle error from #capture-order request
-                    // can also handle error by listening to, order:error, event on <payment-form>
+                    // can also handle error by listening to, order:error, event on <chec-payment-form>
                 });
         },
     },
