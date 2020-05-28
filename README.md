@@ -18,13 +18,13 @@ npm install path-to/commerce-components
 
 ### Easily build a checkout form 
 
-1. Import then install `VueCommerceJs` using `Vue.use()` passing your public `Chec` API key.
+1. Import then install `VueCommercejs` using `Vue.use()` passing your public `Chec` API key.
 
     This will 
     - globally register the `<chec-payment-form>` component.
     - instantiate a Commerce.js client assigning it as a global variable `this.$commerce`. (e.g. `this.$commerce.cart.retrieve().then(cart => console.log(cart));` from anywhere)
     ```js
-    import VueCommerceJs from '@chec/commerce-components';
+    import VueCommercejs from '@chec/commerce-components';
 
     Vue.use(VueCommercejs, { 
       commercejsPublicKey: process.env.VUE_APP_COMMERCEJS_PUBLIC_KEY 
@@ -76,8 +76,8 @@ npm install path-to/commerce-components
         // retrieve cart, then list of products, and then add first product to cart
         this.$commerce.cart.retrieve().then(cart => {
             this.cartId = cart.id;
-            this.$commerce.products.list().then(({ products }) => {
-                this.$commerce.cart.add(products[0].id);
+            this.$commerce.products.list().then(({ data }) => {
+                this.$commerce.cart.add(data[0].id);
             });
         })
     },
