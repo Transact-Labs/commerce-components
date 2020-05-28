@@ -1,54 +1,87 @@
-/* eslint-disable no-alert */
 <template>
   <div class="cjs-flex cjs-flex-col">
     Commerce.js x Vue.js !
+    <br />
+    <br />
     Cart :
     <br />
     <code>{{ JSON.stringify(cart, null, 2)}}</code>
     <br />
+    <br />
+    <br />
+    Cart actions:
     <button @click="() => addToCart(0)">Add first product to cart</button> --
     <button @click="() => removeFromCart(0)">Remove first  product from cart</button>
     <br />
-    <button @click="() => addToCart(1)">Add second  product to cart</button> --
-    <button @click="() => removeFromCart(1)">Remove second  product from cart</button>
-    <br />
+
+    Checkout:
     <div class="cjs-flex cjs-bg-gray-200 cjs-w-full">
       <ChecPaymentForm
+        class="cjs-w-full cjs-max-w-md cjs-mx-auto"
         :identifierId="cart.id"
-        :checkout.sync="$data.checkoutTokenObject"
-        :context.sync="$data.formData"
-        useTestGateway
+        :checkout.sync="checkout"
+        :context.sync="formData"
         @order:error="handleCaptureOrderErrors"
         v-slot="{ countries, subdivisions, shippingOptions, shippingOptionsById, captureOrder }"
       >
-        <input type="text" v-model="formData.customer.firstName" />
         <!-- <select
           name="shippingMethod"
-          :value="selectedShippingMethod"
-          @change="e => updateData('selectedShippingMethod', e.target.value)">
+          v-model="formData.selectedShippingMethod">
           <option value="" disabled selected>Select a shipping method</option>
           <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
             {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
           </option>
-        </select>-->
-
+        </select> -->
+        <input type="email" placeholder="Enter your email" v-model="formData.customer.email" />
+        <div class="cjs-w-full" id="card-element">
+          <!-- a Stripe Element will be inserted here. -->
+        </div>
         <button @click="customCaptureOrder(captureOrder)">
           make a payment
         </button>
       </ChecPaymentForm>
-      <br />
-      <!-- <p>
-        "the checkout is"
-        {{
-          JSON.stringify(checkoutTokenObject, null, 2)
-        }}
-      </p> -->
     </div>
   </div>
 </template>
 <script>
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { loadStripe } from '@stripe/stripe-js';
+
 export default {
   name: 'app',
+  mounted() {
+    // Create a Stripe client
+    loadStripe(process.env.VUE_APP_STRIPE_KEY).then((stripe) => {
+      this.$stripe = stripe;
+      // Create an instance of Elements
+      const elements = stripe.elements();
+
+      // Custom styling can be passed to options when creating an Element.
+      // (Note that this demo uses a wider set of styles than the guide below.)
+      const style = {
+        base: {
+          color: '#32325d',
+          lineHeight: '18px',
+          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+          fontSmoothing: 'antialiased',
+          fontSize: '16px',
+          '::placeholder': {
+            color: '#aab7c4',
+          },
+        },
+        invalid: {
+          color: '#fa755a',
+          iconColor: '#fa755a',
+        },
+      };
+
+      // Create an instance of the card Element
+      this.$stripeCard = elements.create('card', { style });
+
+      // Add an instance of the card Element into the `card-element` <div>
+      this.$stripeCard.mount('#card-element');
+    });
+  },
   created() {
     // retrieve cart
     this.$commerce.cart.retrieve().then(cart => {
@@ -62,8 +95,6 @@ export default {
     this.$commerce.products.list().then(({ data = [] }) => {
       this.products = data;
     });
-
-    debugger;
   },
   data: () => ({
     toggleTest: false,
@@ -72,7 +103,7 @@ export default {
     products: [],
 
     formData: {},
-    checkoutTokenObject: {},
+    checkout: {},
 
     errors: {},
   }),
@@ -81,40 +112,22 @@ export default {
      * custom captureOrder method
      */
     customCaptureOrder(captureOrderCallBack) {
-      // can handle successful response from order capture as resolved value from returned Promise
-      // or on <PaymentForm>'s @order:success event
-      // can also handle error response from capture order attempt here or on <PaymentForm>'s @order:error
-      // event e.g. v-on:order:error="(error) => error"
-      captureOrderCallBack()
+      this.$stripe.createToken(this.$stripeCard)
+        .then((result) => {
+          if (result.error) {
+            throw result.error;
+          } else {
+            this.formData.card.token = result.token.id;
+            // Send the token to your server
+            return captureOrderCallBack();
+          }
+        })
         .then(resp => {
           console.log('💸💸 YAY ORDER SUCCESSFUL!', resp);
         })
-        .catch(({ data: { error = {} } }) => {
-          let errorToAlert = '';
-          if (error.type === 'validation') {
-            console.log('error while capturing order', error.message);
-
-            error.message.forEach(({ param, _error }) => {
-              this.errors = {
-                ...this.errors,
-                [param]: _error,
-              };
-            });
-
-            errorToAlert = error.message.reduce((string, __error) => `${string} ${__error.error}`, '');
-          }
-
-          if (error.type === 'gateway_error' || error.type === 'not_valid' || error.type === 'bad_request') {
-            this.errors = {
-              ...this.errors,
-              [(error.type === 'not_valid' ? 'fulfillment[shipping_method]' : error.type)]: error.message,
-            };
-            errorToAlert = error.message;
-          }
-          if (errorToAlert) {
-            // eslint-disable-next-line no-alert
-            alert(errorToAlert);
-          }
+        .catch(error => {
+          // eslint-disable-next-line no-alert
+          console.log('😢 could not capture order', error);
         });
     },
     /* everything here is just a min. working example,

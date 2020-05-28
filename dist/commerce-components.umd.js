@@ -8369,12 +8369,12 @@ function ccFormat(value) {
 }
 
 /* harmony default export */ var utils_ccFormat = (ccFormat);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"87271f92-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PaymentForm.vue?vue&type=template&id=0d4dab18&
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"29b898a1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PaymentForm.vue?vue&type=template&id=3919e6e2&
 var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{on:{"submit":function($event){$event.preventDefault();}}},[(_vm.$scopedSlots.default)?[_vm._t("default",null,{"shippingOptionsById":_vm.shippingOptionsById,"captureOrder":_vm.captureOrder},_vm.$data)]:_vm._e()],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/PaymentForm.vue?vue&type=template&id=0d4dab18&
+// CONCATENATED MODULE: ./src/components/PaymentForm.vue?vue&type=template&id=3919e6e2&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.includes.js
 var es_array_includes = __webpack_require__("caad");
@@ -8503,7 +8503,6 @@ var lodash_isempty_default = /*#__PURE__*/__webpack_require__.n(lodash_isempty);
 //
 //
 //
- // import { loadStripe } from '@stripe/stripe-js';
 
 /* harmony default export */ var PaymentFormvue_type_script_lang_js_ = ({
   name: 'PaymentForm',
@@ -8620,8 +8619,14 @@ var lodash_isempty_default = /*#__PURE__*/__webpack_require__.n(lodash_isempty);
         expMonth: '',
         expYear: '',
         cvc: '',
-        billingPostalZipcode: ''
+        billingPostalZipcode: '',
+        token: null,
+        nonce: null,
+        razorpay: {
+          payment_id: null
+        }
       },
+      pay_what_you_want: null,
       selectedGateway: '' // if dev. mode, set dev friendly defaults
 
     };
@@ -8830,8 +8835,41 @@ var lodash_isempty_default = /*#__PURE__*/__webpack_require__.n(lodash_isempty);
           shipping_method: selectedShippingMethod
         },
         payment: {
-          gateway: this.useTestGateway ? 'test_gateway' : selectedGateway
-        }
+          gateway: function () {
+            if (card && card.token) {
+              return 'stripe';
+            }
+
+            return _this5.useTestGateway ? 'test_gateway' : selectedGateway;
+          }(),
+          card: function () {
+            if (!card) {
+              return {};
+            }
+
+            if (card.token) {
+              return {
+                token: card.token
+              };
+            }
+
+            if (card.nonce) {
+              return {
+                nonce: card.nonce
+              };
+            }
+
+            return {};
+          }(),
+          razorpay: function () {
+            if (card && card.razorpay && card.razorpay.payment_id) {
+              return card.razorpay;
+            }
+
+            return undefined;
+          }()
+        },
+        pay_what_you_want: (this.checkout.conditionals || null) && this.checkout.conditionals.pay_what_you_want
       }; // TODO: for mvp only support test_gateay, ideally stripe(token), razor(payment_id), square (nonce), paypal
       // if test gateway selected add necessary card data
       // for the order to be completed.

@@ -25,7 +25,6 @@
 </template>
 <script>
 import _isEmpty from 'lodash.isempty';
-// import { loadStripe } from '@stripe/stripe-js';
 
 export default {
   name: 'PaymentForm',
@@ -133,8 +132,13 @@ export default {
         expYear: '',
         cvc: '',
         billingPostalZipcode: '',
+        token: null,
+        nonce: null,
+        razorpay: {
+          payment_id: null,
+        },
       },
-
+      pay_what_you_want: null,
       selectedGateway: '', // if dev. mode, set dev friendly defaults
     };
   },
@@ -326,8 +330,32 @@ export default {
           shipping_method: selectedShippingMethod,
         },
         payment: {
-          gateway: this.useTestGateway ? 'test_gateway' : selectedGateway,
+          gateway: (() => {
+            if (card && card.token) {
+              return 'stripe';
+            }
+            return this.useTestGateway ? 'test_gateway' : selectedGateway;
+          })(),
+          card: (() => {
+            if (!card) {
+              return {};
+            }
+            if (card.token) {
+              return { token: card.token };
+            }
+            if (card.nonce) {
+              return { nonce: card.nonce };
+            }
+            return {};
+          })(),
+          razorpay: (() => {
+            if (card && card.razorpay && card.razorpay.payment_id) {
+              return card.razorpay;
+            }
+            return undefined;
+          })(),
         },
+        pay_what_you_want: (this.checkout.conditionals || null) && this.checkout.conditionals.pay_what_you_want,
       };
 
       // TODO: for mvp only support test_gateay, ideally stripe(token), razor(payment_id), square (nonce), paypal
