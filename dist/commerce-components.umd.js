@@ -8369,12 +8369,12 @@ function ccFormat(value) {
 }
 
 /* harmony default export */ var utils_ccFormat = (ccFormat);
-// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"29b898a1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PaymentForm.vue?vue&type=template&id=3919e6e2&
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{on:{"submit":function($event){$event.preventDefault();}}},[(_vm.$scopedSlots.default)?[_vm._t("default",null,{"shippingOptionsById":_vm.shippingOptionsById,"captureOrder":_vm.captureOrder},_vm.$data)]:_vm._e()],2)}
+// CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"29b898a1-vue-loader-template"}!./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PaymentForm.vue?vue&type=template&id=1ce4d96e&
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('form',{on:{"submit":function($event){$event.preventDefault();}}},[(_vm.$scopedSlots.default)?[_vm._t("default",null,{"shippingOptionsById":_vm.shippingOptionsById,"captureOrder":_vm.handleInvokingCaptureOrderIfCheckoutGenerated()},_vm.$data)]:_vm._e()],2)}
 var staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/PaymentForm.vue?vue&type=template&id=3919e6e2&
+// CONCATENATED MODULE: ./src/components/PaymentForm.vue?vue&type=template&id=1ce4d96e&
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.array.includes.js
 var es_array_includes = __webpack_require__("caad");
@@ -8384,6 +8384,12 @@ var es_array_reduce = __webpack_require__("13d5");
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.function.name.js
 var es_function_name = __webpack_require__("b0c0");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.object.to-string.js
+var es_object_to_string = __webpack_require__("d3b7");
+
+// EXTERNAL MODULE: ./node_modules/core-js/modules/es.promise.js
+var es_promise = __webpack_require__("e6cf");
 
 // EXTERNAL MODULE: ./node_modules/core-js/modules/es.string.split.js
 var es_string_split = __webpack_require__("1276");
@@ -8472,6 +8478,8 @@ var lodash_isempty = __webpack_require__("23db");
 var lodash_isempty_default = /*#__PURE__*/__webpack_require__.n(lodash_isempty);
 
 // CONCATENATED MODULE: ./node_modules/cache-loader/dist/cjs.js??ref--12-0!./node_modules/thread-loader/dist/cjs.js!./node_modules/babel-loader/lib!./node_modules/cache-loader/dist/cjs.js??ref--0-0!./node_modules/vue-loader/lib??vue-loader-options!./src/components/PaymentForm.vue?vue&type=script&lang=js&
+
+
 
 
 
@@ -8773,6 +8781,12 @@ var lodash_isempty_default = /*#__PURE__*/__webpack_require__.n(lodash_isempty);
     }
   },
   methods: {
+    handleInvokingCaptureOrderIfCheckoutGenerated: function handleInvokingCaptureOrderIfCheckoutGenerated() {
+      return this.$_isEmpty(this.checkout) ? function () {
+        return Promise.reject(new Error('Attempted to capture order before the checkout could be generated'));
+      } : this.captureOrder;
+    },
+
     /**
      * to prevent catching this.captureError promise's rejected error
      *  in template inline with v-on,
@@ -9194,13 +9208,19 @@ function install(Vue, options) {
  // plugin install method
 
 
-/* harmony default export */ var src_0 = ({
+var VueCommercejs = {
   utils: {
     ccFormat: utils_ccFormat
   },
   PaymentForm: PaymentForm,
   install: install
-});
+};
+
+if (typeof window !== 'undefined') {
+  window.VueCommercejs = VueCommercejs;
+}
+
+/* harmony default export */ var src_0 = (VueCommercejs);
 // CONCATENATED MODULE: ./node_modules/@vue/cli-service/lib/commands/build/entry-lib.js
 
 

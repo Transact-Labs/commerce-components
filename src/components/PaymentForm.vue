@@ -15,11 +15,11 @@
           - add labels in default mode post-mvp/mwe
       -->
     <template v-if="$scopedSlots.default"> <!-- really should be $slot.default-->
-      <slot
-        v-bind="$data"
-        :shippingOptionsById="shippingOptionsById"
-        :captureOrder="captureOrder"
-      />
+        <slot
+          v-bind="$data"
+          :shippingOptionsById="shippingOptionsById"
+          :captureOrder="handleInvokingCaptureOrderIfCheckoutGenerated()"
+        />
     </template>
   </form>
 </template>
@@ -276,6 +276,11 @@ export default {
     },
   },
   methods: {
+    handleInvokingCaptureOrderIfCheckoutGenerated() {
+      return this.$_isEmpty(this.checkout)
+        ? () => Promise.reject(new Error('Attempted to capture order before the checkout could be generated'))
+        : this.captureOrder;
+    },
     /**
      * to prevent catching this.captureError promise's rejected error
      *  in template inline with v-on,
