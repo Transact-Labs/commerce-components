@@ -1,7 +1,6 @@
 {
-  "name": "@chec/commerce-components",
-  "version": "0.1.0",
-  "private": true,
+  "name": "commerce-components",
+  "version": "0.1.1",
   "main": "dist/commerce-components.common.js",
   "scripts": {
     "lint": "vue-cli-service lint",
