@@ -1,4 +1,10 @@
-# Vue.js Commerce.js helper library with `<chec-payment-form>` component for checkout flow (BETA v0.1.0)
+# Vue.js installer plugin for Commerce.js with a global `<chec-payment-form>`, an enhanced Commerce.js aware `<form>` Vue component to facilitate rapid checkout development. (BETA v0.1.0)
+
+
+Facililates creating a checkout payment form in a Commercejs.com headless integration.
+
+Play with a demo on codesandbox:
+https://codesandbox.io/s/commerce-components-chec-payment-form-demo-oekns?file=/src/App.vue
 
 ## Installing package
 
@@ -8,15 +14,17 @@ Clone this repo then ...
 
 ### with yarn
 ```sh
-yarn add path-to/commerce-components
+yarn add commerce-components
 ```
 
 ### with npm
 ```sh
-npm install path-to/commerce-components
+npm install commerce-components
 ```
 
 ### Easily build a checkout form 
+
+Before getting started create a free Chec merchant account on Commercejs.com then within your Chec dashboard create at least one product and retrieve your public API key.
 
 1. Import then install `VueCommercejs` using `Vue.use()` passing your public `Chec` API key.
 
@@ -24,7 +32,7 @@ npm install path-to/commerce-components
     - globally register the `<chec-payment-form>` component.
     - instantiate a Commerce.js client assigning it as a global variable `this.$commerce`. (e.g. `this.$commerce.cart.retrieve().then(cart => console.log(cart));` from anywhere)
     ```js
-    import VueCommercejs from '@chec/commerce-components';
+    import VueCommercejs from 'commerce-components';
 
     Vue.use(VueCommercejs, { 
       commercejsPublicKey: process.env.VUE_APP_COMMERCEJS_PUBLIC_KEY 
@@ -41,8 +49,8 @@ npm install path-to/commerce-components
             <chec-payment-form
                 useTestGateway // forces use of test_gatway when slotProp.captureOrder is called
 
-                :identifierId="cartId"
-                indentifierType="cart" // cart by default
+                :identifierId="cartId" // also supports a permalink or id—if the prop identifierType is set to 'product_id'
+                identifierType="cart" // cart by default, also supports permalink and product_id 
 
                 // handles sync. checkout object, and expects checkout value to empty object {}, 
                 // it will populate it automatically on mount
@@ -69,11 +77,11 @@ npm install path-to/commerce-components
     ```
     ```js
     // in App.vue (example)
-    // in this example, in the created() hook we're retrieving a cart and setting the cart.id in the state, all of our  products and adding one to the cart, so that the chec-payment-form can have an successfully purchase an item
+    // in this example, in the created() hook we're retrieving a cart, setting the cart.id in the state, and adding a product to the cart
     export default {
     name: 'app',
     created() {
-        // retrieve cart, then list of products, and then add first product to cart
+        // retrieve the cart, and then add a product to the cart
         this.$commerce.cart.retrieve().then(cart => {
             this.cartId = cart.id;
             this.$commerce.products.list().then(({ data }) => {
@@ -121,7 +129,7 @@ npm install path-to/commerce-components
             billingPostalZipcode: '',
         },
         */
-       // (Note, must be passed to form as <chec-payment-form :context.sync="formData"/>)
+        // (Note, must be passed to form as <chec-payment-form :context.sync="formData"/>)
         formData: {}, // 'formData' is an arbitrary property name, it can be any name so long it gets passed as the context.sync prop to <chec-payment-form> for it to be set-up if using slot.captureOrder
         
         // checkout token object, populated when <chec-payment-form> mounts and generates token, will be updated, and continuesly sync. with chec-payment-form (Note, must be passed to form as <chec-payment-form :checkout.sync="checkoutTokenObject"/>)
@@ -160,13 +168,13 @@ cd commerce-components
 yarn install
 ```
 
-### Compile and minify a build of package then serves demo on localhost:7777
+### Compile and minify a build of the package, serving the demo on localhost:7777
 ```
 yarn build-lib && yarn demo:serve
 ```
 
 ### Play with the demo on http://localhost:7777/,
-besure to create an `.env` while with your Chec public `API` key for the demo app to fully work.
+besure to create an `.env` file with your Chec public `API` key for the demo app to fully work.
 ```
     VUE_APP_COMMERCEJS_PUBLIC_KEY=/* https://chec.io public API key */
 ```
