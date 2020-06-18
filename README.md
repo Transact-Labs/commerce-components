@@ -1,4 +1,4 @@
-# Vue.js installer plugin for Commerce.js with a global `<chec-payment-form>`, an enhanced Commerce.js aware `<form>` Vue component to facilitate rapid checkout development. (BETA v0.1.0)
+# Vue.js installer plugin for Commerce.js with a global `<chec-payment-form>`, an enhanced Commerce.js aware `<form>` Vue component to facilitate rapid checkout development. (beta)
 
 <p align="center">
   <a href="https://npmcharts.com/compare/commerce-components?minimal=true"><img src="https://img.shields.io/npm/dm/commerce-components.svg?sanitize=true" alt="Downloads"></a>
