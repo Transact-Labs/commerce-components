@@ -1,50 +1,71 @@
 {
-  "name": "commerce-components",
-  "version": "0.1.1",
-  "main": "dist/commerce-components.common.js",
-  "scripts": {
-    "lint": "vue-cli-service lint",
-    "lint:fix": "vue-cli-service lint --fix",
-    "build-lib": "vue-cli-service build --target lib --name commerce-components src/index.js",
-    "storybook:build": "vue-cli-service storybook:build -c config/storybook",
-    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
-    "demo:serve": "echo \"Starting demo on port 7777\" && vue-cli-service serve --port 7777 demo/main.js"
-  },
-  "dependencies": {
-    "@chec/commerce.js": "^2.0.1",
-    "core-js": "^3.4.4",
-    "lodash.isempty": "^4.4.0",
-    "vue": "^2.6.11",
-    "vue-stripe-elements-plus": "^0.3.2"
-  },
-  "devDependencies": {
-    "@storybook/addon-actions": ">=5.3.0",
-    "@storybook/addon-docs": ">=5.3.0",
-    "@storybook/addon-knobs": ">=5.3.0",
-    "@storybook/addon-links": ">=5.3.0",
-    "@storybook/addon-notes": ">=5.3.0",
-    "@storybook/vue": ">=5.3.0",
-    "@stripe/stripe-js": "^1.5.0",
-    "@vue/cli-plugin-babel": "^4.1.0",
-    "@vue/cli-plugin-eslint": "^4.2.2",
-    "@vue/cli-service": "^4.1.0",
-    "@vue/eslint-config-airbnb": "^5.0.2",
-    "autoprefixer": "^9.7.4",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^5.16.0",
-    "eslint-plugin-vue": "^5.0.0",
-    "postcss-assets": "^5.0.0",
-    "sass": "^1.25.0",
-    "sass-loader": "^8.0.2",
-    "storybook-addon-vue-info": "^1.4.1",
-    "tailwindcss": "^1.2.0",
-    "tailwindcss-plugins": "^0.3.0",
-    "vue-cli-plugin-storybook": "^1.2.0",
-    "vue-svg-loader": "^0.16.0",
-    "vue-template-compiler": "^2.6.10"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ]
-}
+    "name": "commerce-components",
+    "version": "0.1.2",
+    "main": "dist/commerce-components.common.js",
+    "description": "Vue.js installer plugin for Commerce.js with a global `<chec-payment-form>`, an enhanced Commerce.js aware `<form>` Vue component to facilitate rapid checkout development. (BETA v0.1.0)",
+    "homepage": "https://github.com/john-raymon/commerce-components#readme",
+    "scripts": {
+      "lint": "vue-cli-service lint",
+      "lint:fix": "vue-cli-service lint --fix",
+      "build-lib": "vue-cli-service build --target lib --name commerce-components src/index.js",
+      "storybook:build": "vue-cli-service storybook:build -c config/storybook",
+      "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
+      "demo:serve": "echo \"Starting demo on port 7777\" && vue-cli-service serve --port 7777 demo/main.js"
+    },
+    "dependencies": {
+      "@chec/commerce.js": "^2.0.1",
+      "core-js": "^3.4.4",
+      "lodash.isempty": "^4.4.0",
+      "vue": "^2.6.11",
+      "vue-stripe-elements-plus": "^0.3.2"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/john-raymon/commerce-components.git"
+    },
+    "keywords": [
+      "commerce.js",
+      "chec",
+      "ecommerce",
+      "chec-payment-form",
+      "form",
+      "checkout",
+      "commerce",
+      "component",
+      "components",
+      "commerce",
+      "vue"
+    ],
+    "author": "John Raymon",
+    "license": "MIT",
+    "devDependencies": {
+      "@storybook/addon-actions": ">=5.3.0",
+      "@storybook/addon-docs": ">=5.3.0",
+      "@storybook/addon-knobs": ">=5.3.0",
+      "@storybook/addon-links": ">=5.3.0",
+      "@storybook/addon-notes": ">=5.3.0",
+      "@storybook/vue": ">=5.3.0",
+      "@stripe/stripe-js": "^1.5.0",
+      "@vue/cli-plugin-babel": "^4.1.0",
+      "@vue/cli-plugin-eslint": "^4.2.2",
+      "@vue/cli-service": "^4.1.0",
+      "@vue/eslint-config-airbnb": "^5.0.2",
+      "autoprefixer": "^9.7.4",
+      "babel-eslint": "^10.0.3",
+      "eslint": "^5.16.0",
+      "eslint-plugin-vue": "^5.0.0",
+      "postcss-assets": "^5.0.0",
+      "sass": "^1.25.0",
+      "sass-loader": "^8.0.2",
+      "storybook-addon-vue-info": "^1.4.1",
+      "tailwindcss": "^1.2.0",
+      "tailwindcss-plugins": "^0.3.0",
+      "vue-cli-plugin-storybook": "^1.2.0",
+      "vue-svg-loader": "^0.16.0",
+      "vue-template-compiler": "^2.6.10"
+    },
+    "browserslist": [
+      "> 1%",
+      "last 2 versions"
+    ]
+  }
