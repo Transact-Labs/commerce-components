@@ -14,9 +14,7 @@ https://codesandbox.io/s/commerce-components-chec-payment-form-demo-oekns?file=/
 
 ## Installing package
 
-You can use either `yarn` or `npm` to install the `commerce-components` package and it's dependencies from this Github repo.
-
-Clone this repo then ...
+You can use either `yarn` or `npm` to install the `commerce-components` package and it's dependencies from npm.
 
 ### with yarn
 ```sh
