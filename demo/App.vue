@@ -23,7 +23,6 @@
         :checkout.sync="checkout"
         :context.sync="formData"
         @order:error="handleCaptureOrderErrors"
-        v-slot="{ countries, subdivisions, shippingOptions, shippingOptionsById, captureOrder }"
       >
         <!-- <select
           name="shippingMethod"

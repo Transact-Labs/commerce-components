@@ -1,6 +1,6 @@
 <!-- Payment-form, encapsulates shipping/billing and payment form details-->
 <template>
-  <form @submit.prevent>
+  <form @submit.prevent :class="{ 'chec-form--default-mode': !$scopedSlots.default }">
       <!--
         Two UI template Modes
         custom(slot) mode, default mode
@@ -19,11 +19,9 @@
           :shippingOptionsById="shippingOptionsById"
           :captureOrder="handleInvokingCaptureOrderIfCheckoutGenerated()"
         >
-          <template v-if="$props.checkout && $props.checkout.collects.shipping_address">
+          <template v-if="checkout && checkout.collects && checkout.collects.shipping_address">
             <input
-              class="cjs-shadow cjs-w-full cjs-appearance-none
-              cjs-border cjs-rounded cjs-py-2 cjs-px-3
-              cjs-text-grey-darker"
+              class=""
               placeholder="Shipping name"
               type="text"
             >
