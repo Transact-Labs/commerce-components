@@ -1,6 +1,6 @@
 <!-- Payment-form, encapsulates shipping/billing and payment form details-->
 <template>
-  <form @submit.prevent :class="{ 'chec-form--default-mode': !$scopedSlots.default }">
+  <form @submit.prevent :class="{ 'chec-form--default-mode cjs-space-y-4': !$scopedSlots.default }">
       <!--
         Two UI template Modes
         custom(slot) mode, default mode
@@ -30,7 +30,10 @@
             <input placeholder="Shipping City" type="text">
             <input placeholder="Shipping Zip Code" type="text">
           </template>
-          <button class="cjs-w-full cjs-bg-green-600 cjs-rounded cjs-shadow cjs-text-white cjs-p-2 cjs-font-lato">
+          <button
+            :disabled="$_isEmpty(checkout) || checkout.line_items[0].length"
+            :class="{ 'cjs-opacity-50 cjs-cursor-not-allowed': ($_isEmpty(checkout) || checkout.line_items[0].length)}"
+            class="cjs-w-full cjs-bg-green-600 cjs-rounded cjs-shadow cjs-text-white cjs-p-2 cjs-font-lato">
             checkout
           </button>
         </slot>
@@ -110,6 +113,7 @@ export default {
     },
   },
   beforeCreate() {
+    this.$_isEmpty = _isEmpty;
     this.$formDataSchema = {
       customer: {
         firstName: '',
@@ -163,7 +167,6 @@ export default {
       ...this.$formDataSchema,
       ...this.context,
     }); // handles for remounting after already scaffolded and sync. form-data prop
-    this.$_isEmpty = _isEmpty;
     this.getAllCountries();
     // utilize emitted Commerce.js Cart Events
     // Cart.Item.Added, Cart.Item.Updated, Cart.Item.Removed, Cart.Deleted, Cart.Emptied
@@ -521,3 +524,12 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+  .chec-form {
+    &--default-mode {
+      input {
+        @apply cjs-w-full cjs-shadow cjs-appearance-none cjs-border cjs-rounded cjs-py-2 cjs-px-3;
+      }
+    }
+  }
+</style>
