@@ -18,6 +18,7 @@
     <div class="cjs-flex cjs-bg-gray-200 cjs-w-full">
       <ChecPaymentForm
         class="cjs-w-full cjs-max-w-md cjs-mx-auto"
+        identifierType="cart"
         :identifierId="cart.id"
         :checkout.sync="checkout"
         :context.sync="formData"
@@ -31,56 +32,55 @@
           <option v-for="option in shippingOptions" :value="option.id" :key="option.id">
             {{ `${option.description || ''} $${option.price.formatted_with_code}` }}
           </option>
-        </select> -->
+        </select>
         <input type="email" placeholder="Enter your email" v-model="formData.customer.email" />
         <div class="cjs-w-full" id="card-element">
-          <!-- a Stripe Element will be inserted here. -->
+          a Stripe Element will be inserted here.
         </div>
         <button @click="customCaptureOrder(captureOrder)">
           make a payment
-        </button>
+        </button> -->
       </ChecPaymentForm>
     </div>
   </div>
 </template>
 <script>
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { loadStripe } from '@stripe/stripe-js';
 
 export default {
   name: 'app',
   mounted() {
     // Create a Stripe client
-    loadStripe(process.env.VUE_APP_STRIPE_KEY).then((stripe) => {
-      this.$stripe = stripe;
-      // Create an instance of Elements
-      const elements = stripe.elements();
+    // loadStripe(process.env.VUE_APP_STRIPE_KEY).then((stripe) => {
+    //   this.$stripe = stripe;
+    //   // Create an instance of Elements
+    //   const elements = stripe.elements();
 
-      // Custom styling can be passed to options when creating an Element.
-      // (Note that this demo uses a wider set of styles than the guide below.)
-      const style = {
-        base: {
-          color: '#32325d',
-          lineHeight: '18px',
-          fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-          fontSmoothing: 'antialiased',
-          fontSize: '16px',
-          '::placeholder': {
-            color: '#aab7c4',
-          },
-        },
-        invalid: {
-          color: '#fa755a',
-          iconColor: '#fa755a',
-        },
-      };
+    //   // Custom styling can be passed to options when creating an Element.
+    //   // (Note that this demo uses a wider set of styles than the guide below.)
+    //   const style = {
+    //     base: {
+    //       color: '#32325d',
+    //       lineHeight: '18px',
+    //       fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+    //       fontSmoothing: 'antialiased',
+    //       fontSize: '16px',
+    //       '::placeholder': {
+    //         color: '#aab7c4',
+    //       },
+    //     },
+    //     invalid: {
+    //       color: '#fa755a',
+    //       iconColor: '#fa755a',
+    //     },
+    //   };
 
-      // Create an instance of the card Element
-      this.$stripeCard = elements.create('card', { style });
+    //   // Create an instance of the card Element
+    //   this.$stripeCard = elements.create('card', { style });
 
-      // Add an instance of the card Element into the `card-element` <div>
-      this.$stripeCard.mount('#card-element');
-    });
+    //   // Add an instance of the card Element into the `card-element` <div>
+    //   this.$stripeCard.mount('#card-element');
+    // });
   },
   created() {
     // retrieve cart

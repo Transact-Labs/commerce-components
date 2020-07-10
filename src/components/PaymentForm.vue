@@ -14,13 +14,28 @@
         useful for quick developing with tailwind classes
           - add labels in default mode post-mvp/mwe
       -->
-    <template v-if="$scopedSlots.default"> <!-- really should be $slot.default-->
         <slot
           v-bind="$data"
           :shippingOptionsById="shippingOptionsById"
           :captureOrder="handleInvokingCaptureOrderIfCheckoutGenerated()"
-        />
-    </template>
+        >
+          <template v-if="$props.checkout && $props.checkout.collects.shipping_address">
+            <input
+              class="cjs-shadow cjs-w-full cjs-appearance-none
+              cjs-border cjs-rounded cjs-py-2 cjs-px-3
+              cjs-text-grey-darker"
+              placeholder="Shipping name"
+              type="text"
+            >
+            <input placeholder="Shipping street" type="text">
+            <input placeholder="Shipping street2" type="text">
+            <input placeholder="Shipping City" type="text">
+            <input placeholder="Shipping Zip Code" type="text">
+          </template>
+          <button class="cjs-w-full cjs-bg-green-600 cjs-rounded cjs-shadow cjs-text-white cjs-p-2 cjs-font-lato">
+            checkout
+          </button>
+        </slot>
   </form>
 </template>
 <script>
